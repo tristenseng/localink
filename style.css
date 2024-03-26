@@ -273,3 +273,30 @@ header {
 .login-register p a:hover {
     text-decoration: underline;
 }
+
+.form-box.login {
+    width: 300px; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
+    border: 1px solid white; /* Adjust as needed */
+    padding: 20px; /* Adjust as needed */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.form-box.register{
+    width: 300px; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
+    border: 1px solid white; /* Adjust as needed */
+    padding: 20px; /* Adjust as needed */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+main {
+    width: 300px; /* Adjust as needed */
+    height: 300px; /* Adjust as needed */
+    border: 1px solid black; /* Adjust as needed */
+    padding: 20px; /* Adjust as needed */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    background-color: rgba(255, 255, 255, 0.8); /* Fill the box with white color */
+}
