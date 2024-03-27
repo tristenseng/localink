@@ -6,11 +6,12 @@
     <title>Register | LocaLink</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="form-box register">
         <h2>User Information</h2>
 
-        <form action="/submit_user_info" method="post">
+        <form id="userForm" action="" method="post">
         <label for="fname">First name:</label><br>
         <input type="text" id="fname" name="fname"><br>
         <label for="lname">Last name:</label><br>
@@ -20,7 +21,22 @@
         <label for="work">I want to work!</label>
         <input type="radio" id="work" name="user_type" value="work"><br>
         <input type="submit" value="Submit">
+        <p>Hire>Submit will redirect you to home.html</p>
+        <p>Work>Submit will redirect you to worker_tags.html</p>
         </form> 
-</div>
+    </div>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            if (document.getElementById('work').checked) {
+                e.preventDefault();
+                window.location.href = 'worker_tags.html';
+            } else if (document.getElementById('hire').checked) {
+                e.preventDefault();
+                window.location.href = 'home.html';
+            }
+        });
+    </script>
+
 </body>
 </html>
