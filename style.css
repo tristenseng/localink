@@ -67,12 +67,12 @@ header {
     width: 100px;
     height: 50px;
     background: transparent;
-    border: 2px solid #fff;
+    border: 2px solid black;
     outline: none;
     border-radius: 6px;
     cursor: pointer;
     font-size: 1.1em;
-    color: #fff;
+    color: black;
     font-weight: 500;
     margin-left: 40px;
 }
@@ -299,4 +299,8 @@ main {
     padding: 20px; /* Adjust as needed */
     box-sizing: border-box; /* Include padding and border in element's total width and height */
     background-color: rgba(255, 255, 255, 0.8); /* Fill the box with white color */
+}
+
+p {
+    margin-bottom: 20px; /* Adjust as needed */
 }
