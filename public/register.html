@@ -9,26 +9,27 @@
 <body>
     <div class="form-box register">
         <h2>Register</h2>
-        <form action="home.html"> <!-- Redirect to home page on successful registration -->
+        <form action="register" method="POST"> <!-- Redirect to home page on successful registration -->
             <div class="input-box">
                 <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
-                <input type="text" required>
+                <input name="username" type="text" required>
                 <label>Username</label>
             </div>
             <div class="input-box">
                 <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                <input type="email" required>
+                <input name="email" type="email" required>
                 <label>Email</label>
             </div>
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                <input type="password" required>
+                <input name="submit" type="password" required>
                 <label>Password</label>
             </div>
             <div class="remember-forgot">
                 <label><input type="checkbox">I agree to the terms & conditions</label>
             </div>
             <!-- Add a comment for server-side registration verification -->
+            <!-- redirect user based on account type (employer or worker) -->
             <button type="submit" class="btn">Register Now</button>
             <!-- Redirect to login page -->
             <div class="login-register">
