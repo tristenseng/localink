@@ -16,28 +16,12 @@
         <!-- Add a logout link -->
       </nav>
     </header>
-    <div class="form-box jobType-employer">
-      <h2>Job Type</h2>
-      <form action="location-employer.html">
+    <div class="form-box timeLength-employer">
+      <h2>Duration</h2>
+      <form action="done-employer.html">
         <div class="input-box">
-          <textarea
-            type="text"
-            id="notes"
-            rows="4"
-            cols="50"
-            required
-          ></textarea>
-          <label>Job Description *</label>
-        </div>
-        <div class="input-box">
-          <textarea
-            type="text"
-            id="notes"
-            rows="4"
-            cols="50"
-            required
-          ></textarea>
-          <label>Required Skills *</label>
+          <input type="number" id="rate" name="rate" min="0" required />
+          <label for="rate">Expected Duration (days) *</label>
         </div>
         <button type="submit" class="btn">Submit</button>
       </form>
