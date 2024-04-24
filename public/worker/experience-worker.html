@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Experience | LocaLink</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="home-worker.html">Home</a>
+        <a href="#">About</a>
+        <a href="login.html">Logout</a>
+        <!-- Add a logout link -->
+      </nav>
+    </header>
+    <div class="form-box experience-worker">
+      <h2>Experience</h2>
+      <h3>* Required Fields</h3>
+      <form action="done-worker.html">
+        <div class="input-box">
+          <input type="number" id="years-experience" min="0" required />
+          <label>Years of Experience *</label>
+        </div>
+        <div class="input-box">
+          <button type="button" data-modal-target="#modal" class="btn1">
+            Recent Work Experience *
+          </button>
+          <div class="modal" id="modal">
+            <div class="modal-header">
+              <div class="words">
+                Type "entrepreneur," under company if you worked for yourself.
+              </div>
+              <button type="button" data-close-button class="close-button">
+                &times;
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="input-box">
+                <input type="text" required />
+                <label>Job Title *</label>
+              </div>
+              <div class="input-box">
+                <input type="text" required />
+                <label>Company *</label>
+              </div>
+            </div>
+          </div>
+          <div id="overlay"></div>
+        </div>
+        <div class="input-box">
+          <textarea type="text" id="notes" rows="4" cols="50"></textarea>
+          <label>Talk about any Relevant Skills (optional)</label>
+        </div>
+        <button type="submit" class="btn">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
