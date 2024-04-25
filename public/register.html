@@ -12,8 +12,18 @@
         <form action="register" method="POST"> <!-- Redirect to home page on successful registration -->
             <div class="input-box">
                 <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
-                <input name="username" type="text" required>
-                <label>Username</label>
+                <input name="firstname" type="text" required>
+                <label>First Name</label>
+            </div>
+            <div class="input-box">
+                <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
+                <input name="lastname" type="text" required>
+                <label>Last Name</label>
+            </div>
+            <div class="input-box">
+                <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
+                <input name="phonenumber" type="text" required>
+                <label>Phone Number</label>
             </div>
             <div class="input-box">
                 <span class="icon"><ion-icon name="mail"></ion-icon></span>
@@ -25,6 +35,12 @@
                 <input name="submit" type="password" required>
                 <label>Password</label>
             </div>
+            <select id="dropdown" class="input-box" name="roles">
+                <option value="worker">Worker</option>
+                <option value="employer">Employer</option>
+            </select>
+
+            </form>
             <div class="remember-forgot">
                 <label><input type="checkbox">I agree to the terms & conditions</label>
             </div>

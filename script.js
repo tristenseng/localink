@@ -55,3 +55,12 @@ btnPopup.addEventListener('click', ()=> {
 iconClose.addEventListener('click', ()=> {
     wrapper.classList.remove('active-popup');
 })
+
+//register page
+var mytextbox = document.getElementById('mytext');
+var mydropdown = document.getElementById('dropdown');
+
+mydropdown.onchange = function(){
+      mytextbox.value = mytextbox.value  + this.value; //to append
+      mytextbox.innerHTML = this.value;
+}

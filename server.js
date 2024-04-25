@@ -32,11 +32,18 @@ app.post('/register', async (req, res) => {
         const database = client.db('cluster0');
         const users = database.collection('users');
         const newUser = {
-            username: req.body.username,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            phonenumber: req.body.phonenumber,
             email: req.body.email,
             password: req.body.password
         };
-        const result = await users.insertOne(newUser);
+        var role = document.getElementsByName("roles");
+        var selectedRole = role.options[role.selectedIndex].value;
+        console.log(selectedRole)
+        if (selectedRole == "Worker") {
+            const result = await users.insertOne(newUser);
+        }
         res.redirect('/login')
     }
     catch (err) {
