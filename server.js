@@ -36,8 +36,7 @@ app.post('/register', async (req, res) => {
         const time = new Date().getTime();
         var objectid = ObjectId.createFromTime(time);
         const selectedRole = req.body.role
-        console.log(hashPass)
-        console.log(typeof(hashPass))
+
 
         if (selectedRole == "worker") {
             const workerUser = {
@@ -80,9 +79,7 @@ app.post('/login', async (req,res) => {
         const employer = await employers.findOne({ email: req.body.email });
         const worker = await workers.findOne({ email: req.body.email });
         const pass = worker.password
-        console.log(worker)
-        console.log(req.body.password)
-        console.log(pass)
+
         const match = await bcrypt.compare(req.body.password, pass)
         if (employer) {
             console.log("employer login success")
