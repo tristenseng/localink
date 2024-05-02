@@ -38,11 +38,10 @@ app.post('/register', async (req, res) => {
             email: req.body.email,
             password: req.body.password
         };
-        var role = document.getElementsByName("roles");
-        var selectedRole = role.options[role.selectedIndex].value;
+        const selectedRole = req.body.role
         console.log(selectedRole)
-        if (selectedRole == "Worker") {
-            const result = await users.insertOne(newUser);
+        if (selectedRole == "worker") {
+            await users.insertOne(newUser);
         }
         res.redirect('/login')
     }
