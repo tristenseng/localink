@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt')
 const app = express();
@@ -29,23 +29,36 @@ app.get('/home', (req, res) => {
 app.post('/register', async (req, res) => {
     try {
         await client.connect();
-        const database = client.db('cluster0');
-        const users = database.collection('users');
-        const hashPass = await bcrypt.hash(req.body.password, 5)
-        const newUser = {
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            phonenumber: req.body.phonenumber,
-            email: req.body.email,
-            password: hashPass
-        };
+        const database = client.db('test');
+        const employer = database.collection('employers');
+        const worker = database.collection('workers')
+        const hashPass = bcrypt.hash(req.body.password, 10)
+        const time = new Date().getTime();
+        var objectid = ObjectId.createFromTime(time);
         const selectedRole = req.body.role
-        console.log(selectedRole)
+        console.log(objectid)
+
         if (selectedRole == "worker") {
-            await users.insertOne(newUser)
+            const workerUser = {
+                workerid: objectid.toString(),
+                firstName: req.body.firstname,
+                lastName: req.body.lastname,
+                phoneNumber: req.body.phonenumber,
+                email: req.body.email,
+                password: hashPass
+            };
+            await worker.insertOne(workerUser)
         }
         else {
-            await users.insertOne(newUser)
+            const employerUser = {
+                employerid: objectid.toString(),
+                firstName: req.body.firstname,
+                lastName: req.body.lastname,
+                phoneNumber: req.body.phonenumber,
+                email: req.body.email,
+                password: hashPass
+            };
+            await employer.insertOne(employerUser)
         }
         res.redirect('/login')
     }
