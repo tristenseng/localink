@@ -21,8 +21,12 @@ app.get('/login', (req, res) => {
     res.sendFile(__dirname + '/public/login.html');
 })
 
-app.get('/home', (req, res) => {
-    res.sendFile(__dirname + '/public/home.html')
+app.get('/home-worker', (req, res) => {
+    res.sendFile(__dirname + '/public/home/worker.html')
+})
+
+app.get('/home-employer', (req, res) => {
+    res.sendFile(__dirname + '/public/home/employer.html')
 })
 
 
@@ -78,16 +82,21 @@ app.post('/login', async (req,res) => {
         const workers = database.collection('workers');
         const employer = await employers.findOne({ email: req.body.email });
         const worker = await workers.findOne({ email: req.body.email });
-        const pass = worker.password
-
-        const match = await bcrypt.compare(req.body.password, pass)
+        var pass = "";
         if (employer) {
+            pass = employer.password
+        }
+        else {
+            pass = worker.password
+        }
+        const match = await bcrypt.compare(req.body.password, pass)
+        if (employer && match) {
             console.log("employer login success")
-            res.redirect('/home')
+            res.redirect('/home-employer')
         }
         else if (worker && match) {
             console.log("worker login success")
-            res.redirect('/home')
+            res.redirect('/home-worker')
         }
         else {
             console.log("login unsuccessful")
