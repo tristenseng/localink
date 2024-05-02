@@ -1,7 +1,7 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
-
+const bcrypt = require('bcrypt')
 const app = express();
 const port = process.env.PORT || 3001;
 
@@ -31,17 +31,21 @@ app.post('/register', async (req, res) => {
         await client.connect();
         const database = client.db('cluster0');
         const users = database.collection('users');
+        const hashPass = await bcrypt.hash(req.body.password, 5)
         const newUser = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             phonenumber: req.body.phonenumber,
             email: req.body.email,
-            password: req.body.password
+            password: hashPass
         };
         const selectedRole = req.body.role
         console.log(selectedRole)
         if (selectedRole == "worker") {
-            await users.insertOne(newUser);
+            await users.insertOne(newUser)
+        }
+        else {
+            await users.insertOne(newUser)
         }
         res.redirect('/login')
     }
