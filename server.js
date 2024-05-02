@@ -31,12 +31,13 @@ app.post('/register', async (req, res) => {
         await client.connect();
         const database = client.db('test');
         const employer = database.collection('employers');
-        const worker = database.collection('workers')
-        const hashPass = bcrypt.hash(req.body.password, 10)
+        const worker = database.collection('workers');
+        const hashPass = await bcrypt.hash(req.body.password, 10);
         const time = new Date().getTime();
         var objectid = ObjectId.createFromTime(time);
         const selectedRole = req.body.role
-        console.log(objectid)
+        console.log(hashPass)
+        console.log(typeof(hashPass))
 
         if (selectedRole == "worker") {
             const workerUser = {
@@ -73,12 +74,27 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req,res) => {
     try {
         await client.connect();
-        const database = client.db('cluster0');
-        const users = database.collection('users');
-        const user = await users.findOne({ email: req.body.email });
-
-        if (user && user.password == req.body.password) {
+        const database = client.db('test');
+        const employers = database.collection('employers');
+        const workers = database.collection('workers');
+        const employer = await employers.findOne({ email: req.body.email });
+        const worker = await workers.findOne({ email: req.body.email });
+        const pass = worker.password
+        console.log(worker)
+        console.log(req.body.password)
+        console.log(pass)
+        const match = await bcrypt.compare(req.body.password, pass)
+        if (employer) {
+            console.log("employer login success")
             res.redirect('/home')
+        }
+        else if (worker && match) {
+            console.log("worker login success")
+            res.redirect('/home')
+        }
+        else {
+            console.log("login unsuccessful")
+            res.redirect('/login')
         }
     }
     catch (err) {
