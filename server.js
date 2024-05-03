@@ -54,13 +54,12 @@ app.post('/register', async (req, res) => {
         const worker = database.collection('workers');
         const hashPass = await bcrypt.hash(req.body.password, 10);
         const time = new Date().getTime();
-        var objectid = ObjectId.createFromTime(time);
+        var objectid = ObjectId.createFromTime(time).toString().substring(0,8)
         const selectedRole = req.body.role
-
 
         if (selectedRole == "worker") {
             const workerUser = {
-                workerid: objectid.toString(),
+                workerid: objectid,
                 firstName: req.body.firstname,
                 lastName: req.body.lastname,
                 phoneNumber: req.body.phonenumber,
@@ -69,9 +68,10 @@ app.post('/register', async (req, res) => {
             };
             await worker.insertOne(workerUser)
         }
+
         else {
             const employerUser = {
-                employerid: objectid.toString(),
+                employerid: objectid,
                 firstName: req.body.firstname,
                 lastName: req.body.lastname,
                 phoneNumber: req.body.phonenumber,
@@ -84,7 +84,7 @@ app.post('/register', async (req, res) => {
     }
     catch (err) {
         console.error(err);
-        res.status(500).send("Error registering user")
+        res.redirect('/register')
     } finally {
         await client.close();
     }
