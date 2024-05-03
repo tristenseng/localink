@@ -525,7 +525,7 @@ header {
 }
 
 /*Added 4/27*/
-.form-box.location-worker{
+.form-box.location-worker, .skills{
     width: 300px; /* Adjust as needed */
     height: 500px; /* Adjust as needed */
     border: 1px solid white; /* Adjust as needed */
@@ -533,6 +533,10 @@ header {
     padding: 20px; /* Adjust as needed */
     box-sizing: border-box; /* Include padding and border in element's total width and height */
     background-color: rgba(255, 255, 255, 0.8);
+}
+
+.skills button {
+    margin: 10px 0;
 }
 
 /*Added 4/27*/

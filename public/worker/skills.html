@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skills</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="/home-worker">Home</a>
+        <a href="#">About</a>
+        <a href="/logout">Logout</a>
+        <!-- Add a logout link -->
+      </nav>
+    </header>
+    <div class="form-box skills">
+      <h2>Skills</h2>
+      <form action="done-worker.html">
+        <select name="" id="skillSelect">
+            <option selected>Select Skill</option>
+        </select>
+        <button type="reset" class="btn">Add another skill</button>
+        <button type="submit" class="btn">Finished</button>
+      </form>
+    </div>
+    <script>
+        window.onload = function() {
+            fetch('/skillsArray')
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('skillSelect');
+                    data.forEach(skill => {
+                        const option = document.createElement('option');
+                        option.value = skill._id;
+                        option.textContent = skill.name;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading the skills:', error));
+        };
+    </script>
+  </body>
+</html>

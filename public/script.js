@@ -7,6 +7,11 @@ const openModalButtons = document.querySelectorAll('[data-modal-target]')
 const closeModalButtons = document.querySelectorAll('[data-close-button]')
 const overlay = document.getElementById('overlay')
 
+const express = require('express');
+const app = express();
+
+app.use(express.static('public'));
+
 openModalButtons.forEach(button => {
   button.addEventListener('click', () => {
     const modal = document.querySelector(button.dataset.modalTarget)
@@ -56,11 +61,18 @@ iconClose.addEventListener('click', ()=> {
     wrapper.classList.remove('active-popup');
 })
 
-//register page
-var mytextbox = document.getElementById('mytext');
-var mydropdown = document.getElementById('dropdown');
-
-mydropdown.onchange = function(){
-      mytextbox.value = mytextbox.value  + this.value; //to append
-      mytextbox.innerHTML = this.value;
-}
+//skills page
+window.onload = function() {
+  fetch('/skillsArray')
+      .then(res => res.json())
+      .then(data => {
+          const select = document.getElementById('skillSelect');
+          data.forEach(skill => {
+              const option = document.createElement('option');
+              option.value = skill._id;
+              option.textContent = skill.name;
+              select.appendChild(option);
+          });
+      })
+      .catch(error => console.error('Error loading the skills:', error));
+};

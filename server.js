@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')
 const port = process.env.PORT || 3001;
 const crypto = require('crypto');
+const { connect } = require('http2');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -19,7 +20,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: uri}),
-    cookie: { maxAge: 1000 * 60 * 60 } //1 hour duration
+    cookie: {secure:true, maxAge: 1000 * 60 * 60 } //1 hour duration
 }));
 
 
@@ -44,6 +45,26 @@ app.get('/home-employer', (req, res) => {
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/login')
+})
+
+app.get('/skills', (req, res) => {
+    res.sendFile(__dirname + '/public/worker/skills.html')
+})
+
+app.get('/skillsArray', async (req, res) => {
+    const db = await connect();
+    try {
+        const collection = db.collection('skills')
+        const skills = await collection.find({}).toArray();
+        res.json(skills)
+    }
+    catch (err) {
+        res.status(500).send(err);
+    }
+})
+
+app.get('/location-worker', async (req,res) => {
+    res.sendFile(__dirname + '/public/worker/location-worker.html')
 })
 
 app.post('/register', async (req, res) => {
@@ -116,17 +137,21 @@ app.post('/login', async (req,res) => {
             console.log("employer login success")
             req.session.employer = employer
             if(lastLogin = "") {
-                res.redirect('/')
+                res.redirect('/location-worker')
             }
             res.redirect('/home-employer')
         }
         else if (worker && match) {
             console.log("worker login success")
             req.session.worker = worker
-            if(lastLogin = "") {
-                console.log()
+            let d = Date(Date.now()).toString()
+            if(!worker.lastLogin) {
+                res.redirect('/location-worker')
             }
-            res.redirect('/home-worker')
+            else {
+                res.redirect('/home-worker')
+            }
+
         }
         else {
             console.log("login unsuccessful")
