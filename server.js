@@ -57,16 +57,8 @@ app.post('/register', async (req, res) => {
         var objectid = ObjectId.createFromTime(time).toString().substring(0,8)
         const selectedRole = req.body.role
 
-        const employerEmailCheck = await employer.findOne({ email: req.body.email });
-        const workerEmailCheck = await worker.findOne({ email: req.body.email });
-
-        //makes sure employers and workers cant have the same email
-        if((employerEmailCheck && workerEmailCheck) != null || req.body.email == (workerEmailCheck.email || employerEmailCheck.email)) {
-            res.redirect('/register')
-            console.log('email is already taken. change email')
-        }
     
-        else if (selectedRole == "worker") {
+        if (selectedRole == "worker") {
             const workerUser = {
                 workerid: objectid,
                 firstName: req.body.firstname,
@@ -122,13 +114,18 @@ app.post('/login', async (req,res) => {
         const match = await bcrypt.compare(req.body.password, pass)
         if (employer && match) {
             console.log("employer login success")
-            console.log(employer)
             req.session.employer = employer
+            if(lastLogin = "") {
+                res.redirect('/')
+            }
             res.redirect('/home-employer')
         }
         else if (worker && match) {
             console.log("worker login success")
             req.session.worker = worker
+            if(lastLogin = "") {
+                console.log()
+            }
             res.redirect('/home-worker')
         }
         else {
