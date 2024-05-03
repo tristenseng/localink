@@ -108,7 +108,8 @@ app.post('/login', async (req,res) => {
         const match = await bcrypt.compare(req.body.password, pass)
         if (employer && match) {
             console.log("employer login success")
-            res.session.employer = employer
+            console.log(employer)
+            req.session.employer = employer
             res.redirect('/home-employer')
         }
         else if (worker && match) {
