@@ -3,13 +3,25 @@ const { MongoClient, ObjectId } = require('mongodb');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt')
 const app = express();
+const session = require('express-session');
+const MongoStore = require('connect-mongo')
 const port = process.env.PORT || 3001;
+const crypto = require('crypto');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
-
+const secret = crypto.randomBytes(64).toString('hex');
 const uri = 'mongodb+srv://tristenseng:backpack@cluster0.bis7cwk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+
+app.use(session({
+    secret: secret,
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: uri}),
+    cookie: { maxAge: 1000 * 30 } //30 second session
+}));
+
 
 const client = new MongoClient(uri)
 
@@ -29,6 +41,10 @@ app.get('/home-employer', (req, res) => {
     res.sendFile(__dirname + '/public/home/employer.html')
 })
 
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login')
+})
 
 app.post('/register', async (req, res) => {
     try {
@@ -92,10 +108,12 @@ app.post('/login', async (req,res) => {
         const match = await bcrypt.compare(req.body.password, pass)
         if (employer && match) {
             console.log("employer login success")
+            res.session.employer = employer
             res.redirect('/home-employer')
         }
         else if (worker && match) {
             console.log("worker login success")
+            req.session.worker = worker
             res.redirect('/home-worker')
         }
         else {
@@ -110,5 +128,6 @@ app.post('/login', async (req,res) => {
         await client.close();
     }
 })
+
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
