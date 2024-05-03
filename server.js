@@ -57,16 +57,27 @@ app.post('/register', async (req, res) => {
         var objectid = ObjectId.createFromTime(time).toString().substring(0,8)
         const selectedRole = req.body.role
 
-        if (selectedRole == "worker") {
+        const employerEmailCheck = await employer.findOne({ email: req.body.email });
+        const workerEmailCheck = await worker.findOne({ email: req.body.email });
+
+        //makes sure employers and workers cant have the same email
+        if((employerEmailCheck && workerEmailCheck) != null || req.body.email == (workerEmailCheck.email || employerEmailCheck.email)) {
+            res.redirect('/register')
+            console.log('email is already taken. change email')
+        }
+    
+        else if (selectedRole == "worker") {
             const workerUser = {
                 workerid: objectid,
                 firstName: req.body.firstname,
                 lastName: req.body.lastname,
                 phoneNumber: req.body.phonenumber,
                 email: req.body.email,
-                password: hashPass
+                password: hashPass,
+                lastLogin: null
             };
             await worker.insertOne(workerUser)
+            res.redirect('/login')
         }
 
         else {
@@ -76,11 +87,13 @@ app.post('/register', async (req, res) => {
                 lastName: req.body.lastname,
                 phoneNumber: req.body.phonenumber,
                 email: req.body.email,
-                password: hashPass
+                password: hashPass,
+                lastLogin: null
             };
             await employer.insertOne(employerUser)
+            res.redirect('/login')
         }
-        res.redirect('/login')
+
     }
     catch (err) {
         console.error(err);
@@ -98,6 +111,7 @@ app.post('/login', async (req,res) => {
         const workers = database.collection('workers');
         const employer = await employers.findOne({ email: req.body.email });
         const worker = await workers.findOne({ email: req.body.email });
+
         var pass = "";
         if (employer) {
             pass = employer.password
