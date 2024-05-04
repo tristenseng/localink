@@ -25,16 +25,16 @@
         </select>
         </div>
         <div class="input-box">
-          <input name="experience" type="text" required>
+          <input name="experience" type="text">
           <label>Experience</label>
         </div>
         <div class="input-box">
-          <input name="preferredRate" type="number" required>   
+          <input name="preferredRate" type="number">   
           <label>Preferred Rate</label>       
         </div>
 
         <button type="submit" id ="add-another-skill" class="btn">Add another skill</button>
-       <button type="button" id="skills-redirect" class="btn" action="/home-worker">Finished</button>
+       <button type="submit" id="skills-redirect" class="btn" formaction="/home-worker">Finished</button>
       </form>
     </div>
     <script>
@@ -54,9 +54,7 @@
               })
               .catch(error => console.error('Error loading the skills:', error));
         });
-        document.getElementById('skills-redirect').addEventListener('click', () => {
-          window.location.href = "localhost:3001/home-worker"
-        })
+
     </script>
 
   </body>

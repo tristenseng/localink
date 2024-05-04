@@ -55,6 +55,10 @@ app.get('/logout', async (req, res) => {
 
 })
 
+app.post('/home-worker', (req, res) => {
+    res.redirect('/home-worker')
+})
+
 app.get('/skills', (req, res) => {
     res.sendFile(__dirname + '/public/worker/skills.html')
 })
