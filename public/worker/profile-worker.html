@@ -20,11 +20,31 @@
       <h1>Profile</h1>
       <a href="/skills-worker">Skills</a>
       <div>
-        <label class="switch">
-          <input type="checkbox"></input>
-          <span class="slider round"></span>
-        </label>
+      <button id="visibility-button">Switch Visibility</button>
+      <span id="visibility-status"></span>
       </div>
     </main>
+    <script>
+      document.getElementById('visibility-button').addEventListener('click', function () {
+        console.log('changing visibility!')
+        fetch('http://localhost:3001/toggleVisibility', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'}
+        })
+            .then(res => res.json())  
+            .then(data => {
+              const opt = document.getElementById('visibility-status')
+              console.log(data.visibility)
+              if (data.visibility) {
+                opt.textContent = `Visibility is off!`                
+              }
+              else {
+                opt.textContent = `Visibility is on!`   
+              }
+
+            })
+          .catch(error => console.error('Error loading the skills:', error));
+      });
+    </script>
   </body>
 </html>

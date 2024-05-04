@@ -55,9 +55,7 @@ app.get('/logout', async (req, res) => {
 
 })
 
-app.post('/home-worker', (req, res) => {
-    res.redirect('/home-worker')
-})
+
 
 app.get('/profile-worker', (req, res) => {
     res.sendFile(__dirname + '/public/worker/profile-worker.html')
@@ -105,6 +103,25 @@ app.get('/skillsArray', async (req, res) => {
 
 app.get('/location-worker', async (req,res) => {
     res.sendFile(__dirname + '/public/worker/location-worker.html')
+})
+
+app.post('/toggleVisibility', async (req, res) => {
+    await client.connect();
+    const database = client.db('test');
+    const workers = database.collection('workers')
+    const worker = await workers.findOne({email: req.session.user.email})
+    if (worker.visibility) {
+        await workers.updateOne(worker, {$set: {visibility: false}})
+    }
+    else {
+        await workers.updateOne(worker, {$set: {visibility: true}})
+    }
+    res.send(worker)
+
+})
+
+app.post('/home-worker', (req, res) => {
+    res.redirect('/home-worker')
 })
 
 app.post('/location-worker', async (req, res) => {
