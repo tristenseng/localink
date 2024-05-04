@@ -204,12 +204,12 @@ app.post('/login', async (req,res) => {
             //console.log("worker login success")
             req.session.user = worker
             //console.log(req.session.user)
-            if(!worker.lastLogin) {
+            if(worker.lastLogin = "") {
                 res.redirect('/location-worker')
             }
             else {
                 //CHANGE THIS BACK TO WORKER.HTML
-                res.redirect('/skills')
+                res.redirect('/home-worker')
             }
 
         }
