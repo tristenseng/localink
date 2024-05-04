@@ -20,7 +20,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: uri}),
-    cookie: {secure:false, maxAge: 1000 * 30 } //30 sec duration
+    cookie: {secure:false, maxAge: 1000 * 10 } //10 sec duration
 }));
 
 
@@ -58,10 +58,13 @@ app.get('/skills', (req, res) => {
 
 app.get('/skillsArray', async (req, res) => {
     try {
-        const db = await client.connect();
+        await client.connect()
+        const db = client.db('test')
         const collection = db.collection('skills')
-        const skills = await collection.find({}).toArray();
-        res.json(skills)
+        const data = await collection.find().toArray()
+        //console.log(data)
+
+        res.send(data)
     }
     catch (err) {
         res.status(500).send(err);
@@ -150,7 +153,7 @@ app.post('/login', async (req,res) => {
         const workers = database.collection('workers');
         const employer = await employers.findOne({ email: req.body.email });
         const worker = await workers.findOne({ email: req.body.email });
-
+        
         var pass = "";
         if (employer) {
             pass = employer.password
@@ -168,15 +171,16 @@ app.post('/login', async (req,res) => {
             res.redirect('/home-employer')
         }
         else if (worker && match) {
-            console.log("worker login success")
+            //console.log("worker login success")
             req.session.user = worker
-            console.log(req.session.user)
+            //console.log(req.session.user)
             req.session.save()
             if(!worker.lastLogin) {
                 res.redirect('/location-worker')
             }
             else {
-                res.redirect('/home-worker')
+                //CHANGE THIS BACK TO WORKER.HTML
+                res.redirect('/skills')
             }
 
         }

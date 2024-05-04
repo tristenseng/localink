@@ -63,10 +63,12 @@ iconClose.addEventListener('click', ()=> {
 
 //skills page
 window.onload = function() {
-  fetch('/skillsArray')
+    console.log('hi')
+    fetch('http://localhost:3001/skillsArray')
       .then(res => res.json())
       .then(data => {
           const select = document.getElementById('skillSelect');
+          console.log('hi')
           data.forEach(skill => {
               const option = document.createElement('option');
               option.value = skill._id;

@@ -22,11 +22,27 @@
         <select name="" id="skillSelect">
             <option selected>Select Skill</option>
         </select>
-        <button type="reset" class="btn">Add another skill</button>
+        <button id='add-skill-button' type="button" class="btn">Add another skill</button>
         <button type="submit" class="btn">Finished</button>
       </form>
     </div>
-    <script src="../script.js">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('hi')
+            fetch('http://localhost:3001/skillsArray')
+              .then(res => res.json())
+              .then(data => {
+                  const select = document.getElementById('skillSelect');
+                  console.log('hi')
+                  data.forEach(skill => {
+                      const option = document.createElement('option');
+                      option.value = skill._id;
+                      option.textContent = skill.name;
+                      select.appendChild(option);
+                  });
+              })
+              .catch(error => console.error('Error loading the skills:', error));
+        });
     </script>
   </body>
 </html>
