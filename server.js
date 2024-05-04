@@ -172,7 +172,6 @@ app.post('/login', async (req,res) => {
             req.session.user = worker
             console.log(req.session.user)
             req.session.save()
-            let d = Date(Date.now()).toString()
             if(!worker.lastLogin) {
                 res.redirect('/location-worker')
             }
