@@ -20,7 +20,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: uri}),
-    cookie: {secure:true, maxAge: 1000 * 60 * 60 } //1 hour duration
+    cookie: {secure:false, maxAge: 1000 * 30 } //30 min duration
 }));
 
 
@@ -42,8 +42,13 @@ app.get('/home-employer', (req, res) => {
     res.sendFile(__dirname + '/public/home/employer.html')
 })
 
-app.get('/logout', (req, res) => {
-    req.session.destroy();
+app.get('/logout', async (req, res) => {
+    try {
+        req.session.destroy()
+    }
+    catch (err) {
+        console.error('error logging out: ', err)
+    }
     res.redirect('/login')
 })
 
@@ -52,8 +57,8 @@ app.get('/skills', (req, res) => {
 })
 
 app.get('/skillsArray', async (req, res) => {
-    const db = await connect();
     try {
+        const db = await client.connect();
         const collection = db.collection('skills')
         const skills = await collection.find({}).toArray();
         res.json(skills)
@@ -64,7 +69,27 @@ app.get('/skillsArray', async (req, res) => {
 })
 
 app.get('/location-worker', async (req,res) => {
+    console.log(req.session.user)
     res.sendFile(__dirname + '/public/worker/location-worker.html')
+})
+
+app.post('/location-worker', async (req, res) => {
+    try { 
+        await client.connect();
+        const database = client.db('test');
+        const workers = database.collection('workers');
+        const worker = await workers.findOne({email: req.session.user.email})
+        console.log('in location-worker')
+        console.log(worker)
+        const location = `${req.body.city}, ${req.body.state}`
+        const d = Date(Date.now()).toString()
+        await workers.updateOne(worker, {$set: {location: location, lastLogin: d}})
+        res.redirect('/skills')
+    }
+    catch (err) {
+        console.log(err)
+    }
+
 })
 
 app.post('/register', async (req, res) => {
@@ -116,6 +141,7 @@ app.post('/register', async (req, res) => {
     }
 });
 
+
 app.post('/login', async (req,res) => {
     try {
         await client.connect();
@@ -137,13 +163,15 @@ app.post('/login', async (req,res) => {
             console.log("employer login success")
             req.session.employer = employer
             if(lastLogin = "") {
-                res.redirect('/location-worker')
+                //res.redirect('/location-worker')
             }
             res.redirect('/home-employer')
         }
         else if (worker && match) {
             console.log("worker login success")
-            req.session.worker = worker
+            req.session.user = worker
+            console.log(req.session.user)
+            req.session.save()
             let d = Date(Date.now()).toString()
             if(!worker.lastLogin) {
                 res.redirect('/location-worker')

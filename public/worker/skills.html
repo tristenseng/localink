@@ -26,21 +26,7 @@
         <button type="submit" class="btn">Finished</button>
       </form>
     </div>
-    <script>
-        window.onload = function() {
-            fetch('/skillsArray')
-                .then(res => res.json())
-                .then(data => {
-                    const select = document.getElementById('skillSelect');
-                    data.forEach(skill => {
-                        const option = document.createElement('option');
-                        option.value = skill._id;
-                        option.textContent = skill.name;
-                        select.appendChild(option);
-                    });
-                })
-                .catch(error => console.error('Error loading the skills:', error));
-        };
+    <script src="../script.js">
     </script>
   </body>
 </html>

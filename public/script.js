@@ -76,3 +76,76 @@ window.onload = function() {
       })
       .catch(error => console.error('Error loading the skills:', error));
 };
+
+
+//allows a session to persist
+async function updateLocation(city, state) {
+  try {
+      const response = await fetch('/location-worker', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ city, state }),
+          credentials: 'include'
+      });
+      const data = await response.json();
+      console.log('Location update successful:', data);
+      return data;
+  } catch (error) {
+      console.error('Update location error:', error);
+      throw error;
+  }
+}
+
+async function loginUser(email, password) {
+  try {
+      const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: 'include'
+      });
+      const data = await response.json();
+      console.log('Login successful:', data);
+      return data;
+  } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+  }
+}
+
+
+
+
+document.getElementById("login-button").addEventListener("click", function() {
+  const email = document.getElementsByName("email").value;
+  const password = document.getElementsByName("password").value;
+  loginUser(email, password)
+      .then(data => {
+          if (data.success) {
+              // Continue with your application logic here
+              console.log('Logged in successfully');
+          }
+      })
+      .catch(error => {
+          console.log('Failed to log in');
+      });
+});
+
+document.getElementById("location-worker-button").addEventListener("click", function() {
+  const state = document.getElementByName("state").value;
+  const city = document.getElementsByName("city").value;
+  updateLocation(state, city)
+      .then(data => {
+          if (data.success) {
+              // Continue with your application logic here
+              console.log('Logged in successfully');
+          }
+      })
+      .catch(error => {
+          console.log('Failed to log in');
+      });
+});
