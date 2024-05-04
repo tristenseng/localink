@@ -20,7 +20,8 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: uri}),
-    cookie: {secure:false, maxAge: 1000 * 10 } //10 sec duration
+    cookie: {secure:false, maxAge: 1000 * 30 }, //30 seconds
+    rolling: true
 }));
 
 
@@ -31,6 +32,7 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
+    req.session.isAuth = true;
     res.sendFile(__dirname + '/public/login.html');
 })
 
@@ -45,11 +47,12 @@ app.get('/home-employer', (req, res) => {
 app.get('/logout', async (req, res) => {
     try {
         req.session.destroy()
+        res.redirect('/login')
     }
     catch (err) {
         console.error('error logging out: ', err)
     }
-    res.redirect('/login')
+
 })
 
 app.get('/skills', (req, res) => {
@@ -94,6 +97,29 @@ app.post('/location-worker', async (req, res) => {
     }
 
 })
+
+app.post('/skills', async (req, res) => {
+    try {
+        await client.connect();
+        //console.log('yea')
+        const database = client.db('test');
+        const workerskills = database.collection('workerskills');
+        const worker = req.session.user
+        //console.log(req.session.user)
+        const workerskill = {
+            workerid: worker.workerid,
+            experience: req.body.experience,
+            skillname: req.body.skillname,
+            preferredrate: parseInt(req.body.preferredRate)
+        }
+        console.log(workerskills)
+        await workerskills.insertOne(workerskill)
+        res.redirect('/skills')
+    }
+    catch (err) {
+        throw (err)
+    }
+});
 
 app.post('/register', async (req, res) => {
     try {
@@ -174,7 +200,6 @@ app.post('/login', async (req,res) => {
             //console.log("worker login success")
             req.session.user = worker
             //console.log(req.session.user)
-            req.session.save()
             if(!worker.lastLogin) {
                 res.redirect('/location-worker')
             }

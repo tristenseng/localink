@@ -18,25 +18,36 @@
     </header>
     <div class="form-box skills">
       <h2>Skills</h2>
-      <form action="done-worker.html">
-        <select name="" id="skillSelect">
+      <form action="/skills" method="post" class="input-box skill-box">
+        <div class="input-box">
+          <select name="skillname" id="skillSelect">
             <option selected>Select Skill</option>
         </select>
-        <button id='add-skill-button' type="button" class="btn">Add another skill</button>
-        <button type="submit" class="btn">Finished</button>
+        </div>
+        <div class="input-box">
+          <input name="experience" type="text" required>
+          <label>Experience</label>
+        </div>
+        <div class="input-box">
+          <input name="preferredRate" type="number" required>   
+          <label>Preferred Rate</label>       
+        </div>
+
+        <button type="submit" id ="add-another-skill" class="btn">Add another skill</button>
+       <!-- <button type="button" id="skills-redirect" class="btn">Finished</button> -->
       </form>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             console.log('hi')
             fetch('http://localhost:3001/skillsArray')
-              .then(res => res.json())
+              .then(res => res.json())  
               .then(data => {
                   const select = document.getElementById('skillSelect');
                   console.log('hi')
                   data.forEach(skill => {
                       const option = document.createElement('option');
-                      option.value = skill._id;
+                      option.value = skill.name;
                       option.textContent = skill.name;
                       select.appendChild(option);
                   });
@@ -44,5 +55,6 @@
               .catch(error => console.error('Error loading the skills:', error));
         });
     </script>
+
   </body>
 </html>

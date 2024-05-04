@@ -62,13 +62,13 @@ iconClose.addEventListener('click', ()=> {
 })
 
 //skills page
-window.onload = function() {
-    console.log('hi')
+document.addEventListener('DOMContentLoaded', function () {
+    //console.log('hi')
     fetch('http://localhost:3001/skillsArray')
       .then(res => res.json())
       .then(data => {
           const select = document.getElementById('skillSelect');
-          console.log('hi')
+          //console.log('hi')
           data.forEach(skill => {
               const option = document.createElement('option');
               option.value = skill._id;
@@ -77,7 +77,7 @@ window.onload = function() {
           });
       })
       .catch(error => console.error('Error loading the skills:', error));
-};
+});
 
 
 //allows a session to persist
@@ -151,3 +151,28 @@ document.getElementById("location-worker-button").addEventListener("click", func
           console.log('Failed to log in');
       });
 });
+
+
+//skills insert request
+// function insertRequestToInsertSkill() {
+//   var skillname = document.getElementByName('skillname')
+//   var experience = document.getElementByName('experience')
+//   var preferredRate = document.getElementsByName('preferredRate')
+//   const workerskill = {
+//     skillname: skillname,
+//     preferredRate: preferredRate,
+//     experience: experience
+//   }
+
+//   fetch('/skills', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(workerskill)
+//   })
+//   .then(response => response.json())
+//   .then(data => console.log('Document inserted', data))
+//   .catch(error => console.error('Error inserting document:', error));
+
+// }
