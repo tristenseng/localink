@@ -20,7 +20,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: uri}),
-    cookie: {secure:false, maxAge: 1000 * 30 } //30 min duration
+    cookie: {secure:false, maxAge: 1000 * 30 } //30 sec duration
 }));
 
 
@@ -161,9 +161,9 @@ app.post('/login', async (req,res) => {
         const match = await bcrypt.compare(req.body.password, pass)
         if (employer && match) {
             console.log("employer login success")
-            req.session.employer = employer
+            req.session.user = employer
             if(lastLogin = "") {
-                //res.redirect('/location-worker')
+                res.redirect('/location-employer')
             }
             res.redirect('/home-employer')
         }
