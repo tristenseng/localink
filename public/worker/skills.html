@@ -34,7 +34,7 @@
         </div>
 
         <button type="submit" id ="add-another-skill" class="btn">Add another skill</button>
-       <!-- <button type="button" id="skills-redirect" class="btn">Finished</button> -->
+       <button type="button" id="skills-redirect" class="btn" action="/home-worker">Finished</button>
       </form>
     </div>
     <script>
@@ -54,6 +54,9 @@
               })
               .catch(error => console.error('Error loading the skills:', error));
         });
+        document.getElementById('skills-redirect').addEventListener('click', () => {
+          window.location.href = "localhost:3001/home-worker"
+        })
     </script>
 
   </body>
