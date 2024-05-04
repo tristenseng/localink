@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../style.css" />
+    </head>
+    <body>
+        <header>
+            <h2 class="logo">LocaLink</h2>
+            <nav class="navigation">
+            <a href="/home-worker">Home</a>
+            <a href="#">About</a>
+            <a href="/logout">Logout</a>
+            <!-- Add a logout link -->
+        </header>
+        <main>
+            <ul id="skills-list"></ul>
+        </main>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch('http://localhost:3001/workerskills')
+                .then(res => res.json())  
+                .then(data => {
+                    const skillsList= document.getElementById('skills-list');
+                    data.forEach(skill => {
+                        const option = document.createElement('li');
+                        console.log(skill.skillname)
+                        option.value = skill.skillname;
+                        option.textContent = `${skill.skillname} | ${skill.experience} year(s) of experience | $${skill.preferredrate} per hour`;
+                        skillsList.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error loading the skills:', error));
+            });
+        </script>
+    </body>
+</html>

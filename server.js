@@ -20,7 +20,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: uri}),
-    cookie: {secure:false, maxAge: 1000 * 30 }, //30 seconds
+    cookie: {secure:false, maxAge: 1000 * 60 * 5 }, //5 minutes
     rolling: true
 }));
 
@@ -59,8 +59,33 @@ app.post('/home-worker', (req, res) => {
     res.redirect('/home-worker')
 })
 
+app.get('/profile-worker', (req, res) => {
+    res.sendFile(__dirname + '/public/worker/profile-worker.html')
+})
+
 app.get('/skills', (req, res) => {
     res.sendFile(__dirname + '/public/worker/skills.html')
+})
+
+//send to the skills page on worker account
+app.get('/skills-worker', async (req, res) => {
+    res.sendFile(__dirname + '/public/worker/skills-worker.html')
+})
+
+
+//get array of skills from worker session
+app.get('/workerskills', async (req, res) => {
+    try {
+        await client.connect()
+        const db = client.db('test')
+        const collection = db.collection('workerskills')
+        const data = await collection.find({workerid: req.session.user.workerid}).toArray()
+        console.log(data)
+
+        res.send(data)
+    } catch (err) {
+        res.status(500).send(err)
+    }
 })
 
 app.get('/skillsArray', async (req, res) => {
@@ -79,7 +104,6 @@ app.get('/skillsArray', async (req, res) => {
 })
 
 app.get('/location-worker', async (req,res) => {
-    console.log(req.session.user)
     res.sendFile(__dirname + '/public/worker/location-worker.html')
 })
 
@@ -89,8 +113,8 @@ app.post('/location-worker', async (req, res) => {
         const database = client.db('test');
         const workers = database.collection('workers');
         const worker = await workers.findOne({email: req.session.user.email})
-        console.log('in location-worker')
-        console.log(worker)
+        // console.log('in location-worker')
+        // console.log(worker)
         const location = `${req.body.city}, ${req.body.state}`
         const d = Date(Date.now()).toString()
         await workers.updateOne(worker, {$set: {location: location, lastLogin: d}})
@@ -116,7 +140,7 @@ app.post('/skills', async (req, res) => {
             skillname: req.body.skillname,
             preferredrate: parseInt(req.body.preferredRate)
         }
-        console.log(workerskills)
+        //console.log(workerskills)
         await workerskills.insertOne(workerskill)
         res.redirect('/skills')
     }
@@ -145,6 +169,7 @@ app.post('/register', async (req, res) => {
                 phoneNumber: req.body.phonenumber,
                 email: req.body.email,
                 password: hashPass,
+                visibility: false,
                 lastLogin: null
             };
             await worker.insertOne(workerUser)
@@ -195,7 +220,7 @@ app.post('/login', async (req,res) => {
         if (employer && match) {
             console.log("employer login success")
             req.session.user = employer
-            if(lastLogin = "") {
+            if(!employer.lastLogin) {
                 res.redirect('/location-employer')
             }
             res.redirect('/home-employer')
@@ -204,7 +229,7 @@ app.post('/login', async (req,res) => {
             //console.log("worker login success")
             req.session.user = worker
             //console.log(req.session.user)
-            if(worker.lastLogin = "") {
+            if(!worker.lastLogin) {
                 res.redirect('/location-worker')
             }
             else {
