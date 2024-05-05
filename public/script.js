@@ -100,6 +100,26 @@ async function updateLocation(city, state) {
   }
 }
 
+async function updateLocationEmployer(city, state) {
+  try {
+      const response = await fetch('/location-employer', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ city, state }),
+          credentials: 'include'
+      });
+      const data = await response.json();
+      console.log('Location update successful:', data);
+      return data;
+  } catch (error) {
+      console.error('Update location error:', error);
+      throw error;
+  }
+}
+
+
 async function loginUser(email, password) {
   try {
       const response = await fetch('/login', {
@@ -138,6 +158,21 @@ document.getElementById("login-button").addEventListener("click", function() {
 });
 
 document.getElementById("location-worker-button").addEventListener("click", function() {
+  const state = document.getElementByName("state").value;
+  const city = document.getElementsByName("city").value;
+  updateLocation(state, city)
+      .then(data => {
+          if (data.success) {
+              // Continue with your application logic here
+              console.log('Logged in successfully');
+          }
+      })
+      .catch(error => {
+          console.log('Failed to log in');
+      });
+});
+
+document.getElementById("location-employer-button").addEventListener("click", function() {
   const state = document.getElementByName("state").value;
   const city = document.getElementsByName("city").value;
   updateLocation(state, city)

@@ -40,9 +40,6 @@ app.get('/home-worker', (req, res) => {
     res.sendFile(__dirname + '/public/home/worker.html')
 })
 
-app.get('/home-employer', (req, res) => {
-    res.sendFile(__dirname + '/public/home/employer.html')
-})
 
 app.get('/logout', async (req, res) => {
     try {
@@ -240,7 +237,10 @@ app.post('/login', async (req,res) => {
             if(!employer.lastLogin) {
                 res.redirect('/location-employer')
             }
-            res.redirect('/home-employer')
+            else {
+                res.redirect('/home-employer')
+            }
+
         }
         else if (worker && match) {
             //console.log("worker login success")
@@ -266,6 +266,36 @@ app.post('/login', async (req,res) => {
     } finally {
         await client.close();
     }
+})
+
+
+
+/*employer stuff*/
+app.get('/location-employer', async (req,res) => {
+    res.sendFile(__dirname + '/public/employer/location-employer.html')
+})
+
+app.get('/home-employer', (req, res) => {
+    res.sendFile(__dirname + '/public/home/employer.html')
+})
+
+app.post('/location-employer', async (req, res) => {
+    try { 
+        await client.connect();
+        const database = client.db('test');
+        const employers = database.collection('employers');
+        const employer = await employers.findOne({email: req.session.user.email})
+        // console.log('in location-worker')
+        console.log(employer)
+        const location = `${req.body.city}, ${req.body.state}`
+        const d = Date(Date.now()).toString()
+        await employers.updateOne(employer, {$set: {location: location, lastLogin: d}})
+        res.redirect('/home-employer')
+    }
+    catch (err) {
+        console.log(err)
+    }
+
 })
 
 
