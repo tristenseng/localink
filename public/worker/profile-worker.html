@@ -37,7 +37,10 @@
               //gets passed into here
               const opt = document.getElementById('visibility-status')
               console.log(data.visibility)
-              if (data.visibility) {
+              if (data.working) {
+                opt.textContent = "You're already working! Visibility is off!"
+              }
+              else if (data.visibility) {
                 opt.textContent = `Visibility is off!`                
               }
               else {

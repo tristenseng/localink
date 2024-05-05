@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Skills</title>
+    <title>Home | LocaLink</title>
     <link rel="stylesheet" href="../style.css" />
   </head>
   <body>
@@ -14,32 +14,24 @@
         <a href="#">About</a>
         <a href="/logout">Logout</a>
         <!-- Add a logout link -->
-      </nav>
     </header>
-    <div class="form-box skills">
-      <h2>Skills</h2>
-      <form action="/skills" method="post" class="input-box skill-box">
-        <div class="input-box">
-          <select name="skillname" id="skillSelect">
-            <option selected>Select Skill</option>
-        </select>
-        </div>
-        <div class="input-box">
-          <input name="experience" type="text">
-          <label>Experience</label>
-        </div>
-        <div class="input-box">
-          <input name="preferredRate" type="number">   
-          <label>Preferred Rate</label>       
-        </div>
-
-        <button type="submit" id ="add-another-skill" class="btn">Add another skill</button>
-       <button type="submit" id="skills-redirect" class="btn" formaction="/home-worker">Finished</button>
+    <div class="locationBtn">
+      <form action="/profile-worker">
+        <button type="submit" class="btn">Profile</button>
+      </form>
+      <form action="/requests-worker">
+        <button type="submit" class="btn">Requests</button>
       </form>
     </div>
+    <main>
+      <h2>Requests</h2>
+      <div class="form-box" id="jobs here!">
+
+      </div>
+    </main>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            fetch('http://localhost:3001/skillsArray')
+            fetch('http://localhost:3001/jobsforworkers')
               .then(res => res.json())  
               .then(data => {
                 //data = the array of skills
@@ -53,8 +45,6 @@
               })
               .catch(error => console.error('Error loading the skills:', error));
         });
-
     </script>
-
   </body>
 </html>

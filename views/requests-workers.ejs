@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | LocaLink</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="/home-worker">Home</a>
+        <a href="#">About</a>
+        <a href="/logout">Logout</a>
+        <!-- Add a logout link -->
+    </header>
+    <div class="locationBtn">
+      <form action="/profile-worker">
+        <button type="submit" class="btn">Profile</button>
+      </form>
+    </div>
+    <main>
+      <h2>Requests</h2>
+      <form action="/jobsforworker" method="post" id="job-request-list" class="input-box" name="job-request-list">
+        <span>
+            Here's a list of potential jobs for you
+        </span>
+        <ul class="worker-list">
+          <% job.forEach(attribute => { %>
+            <li>
+              <input type="radio" name="jobid" value="<%= attribute.jobid %>">
+              Description: <%= attribute.description %> 
+              <ul>
+                <li>Skill: <%= attribute.skillRequired %> </li>
+                <li>Duration (days): <%= attribute.duration %></li>
+              </ul>
+            </li>
+          <% }); %>
+        </ul>
+        <button type="submit" name="decision" value="accept">Accept</button>
+        <button type="submit" name="decision" value="reject">Reject</button>
+    </form>
+    </main>
+    <script>
+
+
+    </script>
+  </body>
+</html>

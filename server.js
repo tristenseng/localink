@@ -29,6 +29,10 @@ app.use(session({
 
 const client = new MongoClient(uri)
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + 'public/index.html');
+})
+
 app.get('/register', (req, res) => {
     res.sendFile(__dirname + '/public/register.html');
 })
@@ -107,12 +111,19 @@ app.get('/location-worker', async (req,res) => {
     res.sendFile(__dirname + '/public/worker/location-worker.html')
 })
 
+app.get('/requests-worker', async (req, res) => {
+    res.sendFile(__dirname + '/public/worker/requests-worker.html')
+})
+
 app.post('/toggleVisibility', async (req, res) => {
     await client.connect();
     const database = client.db('test');
     const workers = database.collection('workers')
     const worker = await workers.findOne({email: req.session.user.email})
-    if (worker.visibility) {
+    if (worker.working) {
+        await workers.updateOne(worker, {$set: {visibility: false}})
+    }
+    else if (worker.visibility) {
         await workers.updateOne(worker, {$set: {visibility: false}})
     }
     else {
@@ -275,6 +286,7 @@ app.post('/login', async (req,res) => {
 
 
 
+
 /*employer stuff*/
 app.get('/location-employer', async (req,res) => {
     res.sendFile(__dirname + '/public/employer/location-employer.html')
@@ -341,7 +353,7 @@ app.get('/jobsArray', async (req, res) => {
         const db = client.db('test')
         const collection = db.collection('jobs')
         const data = await collection.find({employerid: req.session.user.employerid}).toArray()
-        const filteredData = data.filter(job => job.workerid == null)
+        const filteredData = data.filter(job => (job.workerid == null) && job.completed == false)
         //console.log(filteredData)
 
         res.send(filteredData)
@@ -402,7 +414,7 @@ app.post('/potentialworkers', async (req, res) => {
                 }
             })
         })
-        //console.log(workerArray)
+        console.log(workerArray)
 
         res.render('potential-workers', {workers: workerArray, skillname: jobSkill})
     } catch (err) {
@@ -414,7 +426,7 @@ app.get('/potentialworkers', async (req, res) => {
     res.sendFile(__dirname + "/public/employer/potential-workers.html")
 })
 
-app.post('/requestworker', async (req, res) => {
+app.post('/requesttoworker', async (req, res) => {
     const db = client.db('test')
     const workers = db.collection('workers')
     const jobs = db.collection('jobs')
@@ -425,6 +437,72 @@ app.post('/requestworker', async (req, res) => {
     console.log(worker)
     await jobs.updateOne(job, {$set: {workerid: worker.workerid, status: "pending"}})
     res.redirect('/requests')
+})
+
+app.post('/jobsforworker', async (req, res) => {
+    await client.connect();
+    const db = client.db('test')
+    const alljobs = db.collection('jobs')
+    //const job = alljobs.findOne({jobid: req.body.jobid})
+    const alljobsarray = await alljobs.find({}).toArray();
+    const workers = db.collection('workers')
+    const workerid = req.session.user.workerid
+    const worker = workers.findOne({workerid: workerid})
+    if (req.body.decision == "accept") {
+        try {
+            //update worker to accepted job state
+            await workers.updateOne(
+                {workerid: workerid},
+                {$set: {visibility: false, working:true}}
+            )
+
+            //reject all other job requests
+            await alljobs.updateMany(
+                {
+                    jobid: {$ne: req.body.jobid},
+                    workerid: workerid
+                },
+                {
+                    $set: { status: "rejected"},
+                    $unset: { workerid}
+
+                }
+            )
+            //update accepted job
+            await alljobs.updateOne(
+                { jobid: req.body.jobid, workerid: workerid},
+                { $set: { status: "accepted" }}
+            )
+        }
+        catch (err) {
+            console.log(err)
+        }
+
+    }   
+    else if (req.body.decision == "reject"){
+        await alljobs.updateOne(
+            {
+                jobid: req.body.jobid
+            },
+            { 
+                $set: { status: "rejected" },
+                $unset: { workerid }
+            }
+            )
+    }
+
+    res.redirect('/home-worker')
+})
+
+app.get('/jobsforworker', async (req, res) => {
+    await client.connect();
+    const db = client.db('test')
+    const jobs = db.collection('jobs')
+    const job = await jobs.find({workerid: req.session.user.workerid}).toArray()
+    console.log(job)
+    res.render('requests-workers',{job: job})
+
+
 })
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
