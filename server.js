@@ -13,16 +13,17 @@ const { parse } = require('path');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
+
+app.set('view engine', 'ejs')
 const secret = crypto.randomBytes(64).toString('hex');
 const uri = 'mongodb+srv://tristenseng:backpack@cluster0.bis7cwk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
 
 app.use(session({
     secret: secret,
     resave: false,
-    saveUninitialized: true,
-    store: MongoStore.create({ mongoUrl: uri}),
-    cookie: {secure:false, maxAge: 1000 * 60 * 5 }, //5 minutes
-    rolling: true
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: uri,  ttl: 5 * 60, autoRemove: 'native'}),
+    cookie: {secure:false, maxAge: 1000 * 60 * 5 } //5 minutes
 }));
 
 
@@ -33,7 +34,6 @@ app.get('/register', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-    req.session.isAuth = true;
     res.sendFile(__dirname + '/public/login.html');
 })
 
@@ -43,14 +43,16 @@ app.get('/home-worker', (req, res) => {
 
 
 app.get('/logout', async (req, res) => {
-    try {
-        req.session.destroy()
-        res.redirect('/login')
-    }
-    catch (err) {
-        console.error('error logging out: ', err)
-    }
+    req.session.destroy(err => {
+        if (err) {
+            // Properly handle the error
+            console.log("Session destroy failed:", err);
+            return res.status(500).send("Failed to destroy the session");
+        }
 
+        res.clearCookie('connect.sid'); // Clear the session cookie
+        res.redirect('/login'); // Redirect to login or home page
+    });
 })
 
 
@@ -83,6 +85,8 @@ app.get('/workerskills', async (req, res) => {
         res.status(500).send(err)
     }
 })
+
+
 
 app.get('/skillsArray', async (req, res) => {
     try {
@@ -232,6 +236,7 @@ app.post('/login', async (req,res) => {
             pass = worker.password
         }
         const match = await bcrypt.compare(req.body.password, pass)
+        console.log(match)
         if (employer && match) {
             console.log("employer login success")
             req.session.user = employer
@@ -244,14 +249,13 @@ app.post('/login', async (req,res) => {
 
         }
         else if (worker && match) {
-            //console.log("worker login success")
+            console.log("worker login success")
             req.session.user = worker
             //console.log(req.session.user)
             if(!worker.lastLogin) {
                 res.redirect('/location-worker')
             }
             else {
-                //CHANGE THIS BACK TO WORKER.HTML
                 res.redirect('/home-worker')
             }
 
@@ -274,6 +278,10 @@ app.post('/login', async (req,res) => {
 /*employer stuff*/
 app.get('/location-employer', async (req,res) => {
     res.sendFile(__dirname + '/public/employer/location-employer.html')
+})
+
+app.post('/home-employer', (req, res) => {
+    res.redirect('/home-employer')
 })
 
 app.get('/home-employer', (req, res) => {
@@ -308,7 +316,6 @@ app.post('/location-employer', async (req, res) => {
 })
 
 app.post('/createJob', async (req, res) => {
-    try { 
         await client.connect();
         const database = client.db('test');
         const jobs = database.collection('jobs');
@@ -324,12 +331,83 @@ app.post('/createJob', async (req, res) => {
             completed: false
         }
         await jobs.insertOne(job)
-        res.redirect('/potential-workers')
+        res.redirect('/jobPosting')
+
+})
+
+app.get('/jobsArray', async (req, res) => {
+    try {
+        await client.connect()
+        const db = client.db('test')
+        const collection = db.collection('jobs')
+        const data = await collection.find({employerid: req.session.user.employerid}).toArray()
+        console.log(data)
+
+        res.send(data)
     }
     catch (err) {
-        console.log(err)
+        res.status(500).send(err);
     }
+})
 
+app.get('/requests', async (req, res) => {
+    res.sendFile(__dirname + "/public/employer/requests.html")
+})
+
+
+app.post('/potentialworkers', async (req, res) => {
+    try {
+        await client.connect()
+        const db = client.db('test')
+        const workerskills = db.collection('workerskills')
+        const workers = db.collection('workers')
+        const jobs = db.collection('jobs')
+        const jobid = req.body.jobname;
+        const job = await jobs.findOne({jobid: jobid }) //finds the job
+        const jobSkill = job.skillRequired // skills required for the job
+        console.log(jobSkill)
+        const workerskillsearch = workerskills.find({skillname: jobSkill})
+        const workerskill = await workerskillsearch.toArray() //all workerskills with the correct skillname
+        var workerArray = []
+        const agg = [
+            {
+              '$lookup': {
+                'from': 'workerskills', 
+                'localField': 'workerid', 
+                'foreignField': 'workerid', 
+                'as': 'result'
+              }
+            }
+          ];
+        const cursor = workers.aggregate(agg);
+        const result = await cursor.toArray();
+        //console.log(result)
+        result.forEach(worker => {
+            worker.result.forEach(item => {
+                //console.log(item)
+                if (item.skillname == jobSkill) {
+                    const neededWorker = {
+                        workerid: worker.workerid,
+                        firstname: worker.firstName,
+                        lastname: worker.lastName,
+                        experience: item.experience,
+                        preferredrate: item.preferredrate,
+                        skillname: item.skillname
+                    }
+                    workerArray.push(neededWorker)
+                }
+            })
+        })
+        console.log(workerArray)
+
+        res.render('potential-workers', {workers: workerArray, skillname: jobSkill})
+    } catch (err) {
+        res.status(500).send(err)
+    }
+})
+
+app.get('/potentialworkers', async (req, res) => {
+    res.sendFile(__dirname + "/public/employer/potential-workers.html")
 })
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

@@ -673,11 +673,19 @@ li {
     margin: 15px 0;
 }
 
+
+/*workers visibility page*/
 #visibility-status {
     margin: 5px 0;
 }
 
+/*job posting page*/
 .form-box.jobType-employer {
     width: auto;
+    height: auto;
+}
+
+/*potential workers (employers) page*/
+#potential-workers-list {
     height: auto;
 }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Location | LocaLink</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="/home-employer">Home</a>
+        <a href="#">About</a>
+        <a href="/logout">Logout</a>
+        <!-- Add a logout link -->
+      </nav>
+    </header>
+    <div class="form-box location-employer">
+      <h2>Requests</h2>
+      <form action="/potentialworkers" method="POST">
+        <div class="input-box">
+          <span>Which job do you need a worker for?</span>
+          <select name="jobname" id="jobselect">
+            <option selected>Select Job</option>
+          </select>
+        </div>
+
+        <button id="requests-button" type="submit" class="btn">Submit</button>
+      </form>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          console.log('hi')
+          fetch('http://localhost:3001/jobsArray')
+            .then(res => res.json())  
+            .then(data => {
+              //data = the array of skills
+                const select = document.getElementById('jobselect');
+                //console.log('hi')
+                data.forEach(job => {
+                    const option = document.createElement('option');
+                    option.value = job.jobid;
+                    option.textContent = job.description;
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error loading the skills:', error));
+      });
+
+
+  </script>
+  </body>
+</html>

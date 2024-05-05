@@ -43,6 +43,7 @@
             fetch('http://localhost:3001/skillsArray')
               .then(res => res.json())  
               .then(data => {
+                //data = the array of skills
                   const select = document.getElementById('skillSelect');
                   console.log('hi')
                   data.forEach(skill => {

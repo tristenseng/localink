@@ -16,19 +16,34 @@
         <!-- Add a logout link -->
       </nav>
     </header>
-    <div class="form-box location-employer">
-      <h2>Workers Available</h2>
-      <form action="/location-employer" method="POST">
-        <div class="input-box">
-          <input type="text" id="state" name="state" required />
-          <label for="state">State:</label>
-        </div>
-        <div class="input-box">
-          <input type="text" id="city" name="city" required />
-          <label for="city">City:</label>
-        </div>
-        <button id="location-employer-button" type="submit" class="btn">Submit</button>
-      </form>
-    </div>
+    <main>
+        <fieldset id="potential-workers-list" class="input-box" name="potential-workers">
+            <span>
+                Here's a list of potential workers for your job.
+            </span>
+
+        </fieldset>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('hi')
+            fetch('http://localhost:3001/potentialworkerskills')
+                .then(res => res.json())  
+                .then(data => {
+                    const skillsList= document.getElementById('potential-workers-list');
+                    data.forEach(skill => {
+                        //data is going to be all of the appropriate workers
+                        //skill will be each individual worker
+                        const option = document.createElement('li');
+                        console.log(skill.skillname)
+                        option.value = skill.skillname;
+                        option.textContent = `${skill.skillname} | ${skill.experience} year(s) of experience | $${skill.preferredrate} per hour`;
+                        skillsList.appendChild(option);
+                    });
+              })
+              .catch(error => console.error('Error loading the skills:', error));
+        });
+    </script>
   </body>
+
 </html>
