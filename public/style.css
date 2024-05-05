@@ -689,3 +689,7 @@ li {
 #potential-workers-list {
     height: auto;
 }
+
+.worker-list li.selected {
+    background-color: #b0c4de;
+}

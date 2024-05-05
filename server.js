@@ -302,8 +302,8 @@ app.post('/location-employer', async (req, res) => {
         const database = client.db('test');
         const employers = database.collection('employers');
         const employer = await employers.findOne({email: req.session.user.email})
-        // console.log('in location-worker')
-        console.log(employer)
+        console.log('in location-worker')
+        //console.log(employer)
         const location = `${req.body.city}, ${req.body.state}`
         const d = Date(Date.now()).toString()
         await employers.updateOne(employer, {$set: {location: location, lastLogin: d}})
@@ -341,9 +341,10 @@ app.get('/jobsArray', async (req, res) => {
         const db = client.db('test')
         const collection = db.collection('jobs')
         const data = await collection.find({employerid: req.session.user.employerid}).toArray()
-        console.log(data)
+        const filteredData = data.filter(job => job.workerid == null)
+        //console.log(filteredData)
 
-        res.send(data)
+        res.send(filteredData)
     }
     catch (err) {
         res.status(500).send(err);
@@ -365,7 +366,7 @@ app.post('/potentialworkers', async (req, res) => {
         const jobid = req.body.jobname;
         const job = await jobs.findOne({jobid: jobid }) //finds the job
         const jobSkill = job.skillRequired // skills required for the job
-        console.log(jobSkill)
+        //console.log(jobSkill)
         const workerskillsearch = workerskills.find({skillname: jobSkill})
         const workerskill = await workerskillsearch.toArray() //all workerskills with the correct skillname
         var workerArray = []
@@ -383,10 +384,13 @@ app.post('/potentialworkers', async (req, res) => {
         const result = await cursor.toArray();
         //console.log(result)
         result.forEach(worker => {
+            //console.log(worker)
             worker.result.forEach(item => {
                 //console.log(item)
-                if (item.skillname == jobSkill) {
+                //if worker has the appropriate skill for the job and has visibility
+                if ((item.skillname == jobSkill) && worker.visibility) {
                     const neededWorker = {
+                        jobid: req.body.jobname,
                         workerid: worker.workerid,
                         firstname: worker.firstName,
                         lastname: worker.lastName,
@@ -398,7 +402,7 @@ app.post('/potentialworkers', async (req, res) => {
                 }
             })
         })
-        console.log(workerArray)
+        //console.log(workerArray)
 
         res.render('potential-workers', {workers: workerArray, skillname: jobSkill})
     } catch (err) {
@@ -408,6 +412,19 @@ app.post('/potentialworkers', async (req, res) => {
 
 app.get('/potentialworkers', async (req, res) => {
     res.sendFile(__dirname + "/public/employer/potential-workers.html")
+})
+
+app.post('/requestworker', async (req, res) => {
+    const db = client.db('test')
+    const workers = db.collection('workers')
+    const jobs = db.collection('jobs')
+    const workerInfo = JSON.parse(req.body.worker)
+    const job = await jobs.findOne({jobid: workerInfo.jobid})
+    const worker = await workers.findOne({workerid: workerInfo.workerid})
+    console.log(job)
+    console.log(worker)
+    await jobs.updateOne(job, {$set: {workerid: worker.workerid, status: "pending"}})
+    res.redirect('/requests')
 })
 
 app.listen(port, () => console.log(`Server running on port ${port}`));

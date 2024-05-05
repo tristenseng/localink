@@ -39,10 +39,13 @@
                 const select = document.getElementById('jobselect');
                 //console.log('hi')
                 data.forEach(job => {
-                    const option = document.createElement('option');
-                    option.value = job.jobid;
-                    option.textContent = job.description;
-                    select.appendChild(option);
+                    if (job.status != "accepted") {
+                      const option = document.createElement('option');
+                      option.value = job.jobid;
+                      option.textContent = job.description;
+                      select.appendChild(option);
+                    }
+
                 });
             })
             .catch(error => console.error('Error loading the skills:', error));

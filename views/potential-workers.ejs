@@ -17,18 +17,38 @@
       </nav>
     </header>
     <main>
-        <fieldset id="potential-workers-list" class="input-box" name="potential-workers">
+        <form action="/requestworker" method="post" id="potential-workers-list" class="input-box" name="potential-workers">
             <span>
                 Here's a list of potential workers for <%= skillname %>
             </span>
-            <ul>
-                <% workers.forEach( worker => { %>
-                    <li><%= worker.firstname %> <%= worker.lastname %> - <%= worker.experience %> years of experience - $<%=worker.preferredrate%> an hour</li>
-                <% }); %>
+            <ul class="worker-list">
+              <% workers.forEach(worker => { %>
+                <li>
+                  <input type="radio" name="worker" value="<%= JSON.stringify({ workerid: worker.workerid, jobid: worker.jobid })%>" required>
+                  <%= worker.firstname %> <%= worker.lastname %> - <%= worker.experience %> years of experience - $<%= worker.preferredrate %> an hour
+                </li>
+              <% }); %>
             </ul>
-
-        </fieldset>
+            <button type="submit"></button>
+        </form>
     </main>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const workers = document.querySelectorAll('.worker-list li')
+        workers.forEach(worker => {
+          worker.addEventListener('click', () => {
+            // Remove 'selected' class from all items first
+            workers.forEach(otherworker => {
+                if (otherworker !== worker) {
+                    otherworker.classList.remove('selected');
+                }
+            });
+
+            worker.classList.toggle('selected');
+          });
+        });
+      })
+    </script>
   </body>
 
 </html>
