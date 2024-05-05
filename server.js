@@ -8,6 +8,7 @@ const MongoStore = require('connect-mongo')
 const port = process.env.PORT || 3001;
 const crypto = require('crypto');
 const { connect } = require('http2');
+const { parse } = require('path');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -279,6 +280,14 @@ app.get('/home-employer', (req, res) => {
     res.sendFile(__dirname + '/public/home/employer.html')
 })
 
+app.get('/jobPosting', (req, res) => {
+    res.sendFile(__dirname + '/public/employer/jobPosting.html')
+})
+
+app.get('/potential-workers', (req, res) => {
+    res.sendFile(__dirname + '/public/employer/potential-workers.html')
+})
+
 app.post('/location-employer', async (req, res) => {
     try { 
         await client.connect();
@@ -298,5 +307,29 @@ app.post('/location-employer', async (req, res) => {
 
 })
 
+app.post('/createJob', async (req, res) => {
+    try { 
+        await client.connect();
+        const database = client.db('test');
+        const jobs = database.collection('jobs');
+        const time = new Date().getTime();
+        var objectid = ObjectId.createFromTime(time).toString().substring(0,8)
+        const job = {
+            jobid: objectid,
+            employerid: req.session.user.employerid,
+            description: req.body.description,
+            duration: parseInt(req.body.duration),
+            skillRequired: req.body.skillRequired,
+            status: 'pending',
+            completed: false
+        }
+        await jobs.insertOne(job)
+        res.redirect('/potential-workers')
+    }
+    catch (err) {
+        console.log(err)
+    }
+
+})
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
