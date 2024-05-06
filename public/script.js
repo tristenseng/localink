@@ -168,7 +168,7 @@ document.getElementById("location-employer-button").addEventListener("click", fu
       });
 });
 
-
+/*rate */
 //skills insert request
 // function insertRequestToInsertSkill() {
 //   var skillname = document.getElementByName('skillname')
@@ -192,3 +192,4 @@ document.getElementById("location-employer-button").addEventListener("click", fu
 //   .catch(error => console.error('Error inserting document:', error));
 
 // }
+

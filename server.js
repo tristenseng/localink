@@ -199,7 +199,9 @@ app.post('/register', async (req, res) => {
                 phoneNumber: req.body.phonenumber,
                 email: req.body.email,
                 password: hashPass,
+                review: [],
                 visibility: false,
+                working: false,
                 lastLogin: null
             };
             await worker.insertOne(workerUser)
@@ -566,10 +568,11 @@ app.post('/job-completed', async(req, res) => {
     const db = client.db('test')
     const workers = db.collection('workers')
     const jobs = db.collection('jobs')
-    const job = await jobs.findOne({jobid: req.body.jobid})
-    console.log(req.body.jobid)
+    const jobid = req.body.jobid
+    const job = await jobs.findOne({jobid: jobid})
+    console.log(jobid)
 
-    await jobs.updateOne({jobid: req.body.jobid}, {$set: {completed:true}})
+    await jobs.updateOne({jobid: jobid}, {$set: {completed:true}})
     await jobs.updateOne(
         {
             jobid: req.body.jobid
@@ -579,10 +582,25 @@ app.post('/job-completed', async(req, res) => {
         }
         )
     const worker = await workers.findOne({workerid: job.workerid})
-    await workers.updateOne({workerid: job.workerid}, {$set: {working: false}})
+    await workers.updateOne({workerid: job.workerid}, {$set: {working: false, visibility: true}})
     console.log(worker)
 
-    res.render('rate-worker', {worker: worker})
+    res.render('rate-worker', {worker: worker, jobid: jobid})
 })
+
+
+app.post('/job-review', async(req, res) => {
+    await client.connect()
+    const db = client.db('test')
+    const jobs = db.collection('jobs')
+    const workers = db.collection('workers')
+    const workerinfo = JSON.parse(req.body.worker)
+    const job = await jobs.findOne({jobid: req.body.jobid})
+    const worker = await workers.findOne({workerid: workerinfo.workerid})
+    const review = req.body.review
+    await workers.updateOne(worker, {$push: {review: {rating: req.body.rate, description: review}}})
+    res.redirect('/home-employer')
+})
+
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
