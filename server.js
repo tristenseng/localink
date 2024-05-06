@@ -300,7 +300,7 @@ app.post('/home-employer', (req, res) => {
 })
 
 app.get('/home-employer', (req, res) => {
-    res.sendFile(__dirname + '/public/home/employer.html')
+    res.redirect('/home')
 })
 
 app.get('/jobPosting', (req, res) => {
@@ -523,13 +523,13 @@ app.get('/jobsforworker', async (req, res) => {
 
 })
 
-app.get('/jobsInProgress', async (req, res) => {
+app.get('/home', async (req, res) => {
     await client.connect();
     const db = client.db('localink')
     const jobs = db.collection('jobs')
-
     const jobsArray = await jobs.find({employerid: req.session.user.employerid}).toArray()
-    if (jobsArray == undefined) {
+    console.log(jobsArray)
+    if (jobsArray.length == 0) {
         console.log('this works')
         res.render('no-jobs-in-progress')
     }
@@ -604,8 +604,8 @@ app.post('/job-review', async(req, res) => {
     const job = await jobs.findOne({jobid: req.body.jobid})
     const worker = await workers.findOne({workerid: workerinfo.workerid})
     const review = req.body.review
-    await workers.updateOne(worker, {$push: {review: {jobid: req.body.jobid, rating: req.body.rate, description: review}}})
-    res.redirect('/home-employer')
+    await workers.updateOne(worker, {$push: {review: {jobid: workerinfo.jobid, rating: parseInt(req.body.rate), description: review}}})
+    res.redirect('/home')
 })
 
 
