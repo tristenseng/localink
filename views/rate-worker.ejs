@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | LocaLink</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="/home-worker">Home</a>
+        <a href="#">About</a>
+        <a href="/logout">Logout</a>
+        <!-- Add a logout link -->
+    </header>
+    <div class="locationBtn">
+      <form action="/profile-worker">
+        <button type="submit" class="btn">Profile</button>
+      </form>
+    </div>
+    <main>
+        <form action="/job-review" method="post">
+            <h2>How did <% worker.firstName %> do?</h2>
+            <label>Review</label>
+            <textarea name="review" cols="3" rows="50"></textarea>
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+  </body>
+</html>

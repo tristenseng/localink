@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | LocaLink</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="/home-worker">Home</a>
+        <a href="#">About</a>
+        <a href="/logout">Logout</a>
+        <!-- Add a logout link -->
+    </header>
+    <div class="locationBtn">
+      <form action="/profile-worker">
+        <button type="submit" class="btn">Profile</button>
+      </form>
+    </div>
+    <main>
+        <h2>Current Job(s)</h2>
+        <span>Here are the jobs currently in progress. Click any job that is now completed.</span>
+        <div class="jobs-in-progress-list">
+          <% jobs.forEach(job => { %>
+            <form action="/job-completed" method="post">
+              <ul>
+                <li>Description: <%= job.job.description %> </li>
+                <li>Skill Required: <%= job.job.skillRequired %> </li>
+                <li>Duration (days): <%= job.job.duration %> </li>
+                <li>Worker Name: <%= job.worker[0].firstName %> <%= job.worker[0].lastName %> </li>
+                <li>Phone Number: <%= job.worker[0].phoneNumber %> </li>
+                <input type="hidden" name="jobid" value="<%= job.job.jobid %>" />
+              </ul>
+              <!-- Button to submit the form -->
+              <button type="submit">Job Completed</button>
+            </form>
+          <% }); %>
+        </div>
+      </main>
+    <script>
+
+
+    </script>
+  </body>
+</html>

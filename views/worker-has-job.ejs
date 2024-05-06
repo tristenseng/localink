@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | LocaLink</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <header>
+      <h2 class="logo">LocaLink</h2>
+      <nav class="navigation">
+        <a href="/home-worker">Home</a>
+        <a href="#">About</a>
+        <a href="/logout">Logout</a>
+        <!-- Add a logout link -->
+    </header>
+    <div class="locationBtn">
+      <form action="/profile-worker">
+        <button type="submit" class="btn">Profile</button>
+      </form>
+    </div>
+    <main>
+      <h2>Current Job</h2>
+        <span> Requests are unable to be accepted. Here's the job you're currently working.
+        </span>
+        <ul class="worker-list">
+            <li>Description: <%= job.description %> </li>
+            <li>Skill Required: <%= job.skillRequired %> </li>
+            <li>Duration (days): <%= job.duration %></li>
+            <li>Employer Name: <%= employer.firstName %> <%= employer.lastName %> </li>
+            <li>Phone Number: <%= employer.phoneNumber %></li>
+        </ul>
+    </form>
+    </main>
+    <script>
+
+
+    </script>
+  </body>
+</html>
