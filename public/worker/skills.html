@@ -8,33 +8,33 @@
   </head>
   <body>
     <header>
-      <h2 class="logo">LocaLink</h2>
+      <h2 class="logo">Localink</h2>
       <nav class="navigation">
         <a href="/home-worker">Home</a>
-        <a href="#">About</a>
+        <a href="/profile-worker">Profile</a>
+        <a href="/jobsforworker">Requests</a>
+        <a href="/skills">Skills</a>
         <a href="/logout">Logout</a>
-        <!-- Add a logout link -->
       </nav>
     </header>
     <div class="form-box skills">
       <h2>Skills</h2>
       <form action="/skills" method="post" class="input-box skill-box">
-        <div class="input-box">
+        <div class="input-box select-skill">
           <select name="skillname" id="skillSelect">
             <option selected>Select Skill</option>
-        </select>
+          </select>
         </div>
         <div class="input-box">
-          <input name="experience" type="text">
+          <input id="experience" name="experience" type="text">
           <label>Experience</label>
         </div>
         <div class="input-box">
-          <input name="preferredRate" type="number">   
+          <input id="preferredrate" name="preferredRate" type="number">   
           <label>Preferred Rate</label>       
         </div>
 
         <button type="submit" id ="add-another-skill" class="btn">Add another skill</button>
-       <button type="submit" id="skills-redirect" class="btn" formaction="/home-worker">Finished</button>
       </form>
     </div>
     <script>

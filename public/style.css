@@ -233,8 +233,7 @@ header {
 .input-box {
     position: relative;
     width: 100%;
-    height: 50px;
-    border-bottom: 2px solid #162938;
+    height: 50px;;
     margin: 30px 0;
 }
 
@@ -731,3 +730,99 @@ li {
 .rate > label:hover ~ input:checked ~ label {
     color: #c59b08;
 }
+
+
+
+/*login page*/
+.login-register {
+    margin: 20px 0 0 0;
+    padding: 0
+}
+
+.login {
+    height: auto !important;
+}
+
+/*register page*/
+.register {
+    height: auto !important;
+}
+
+.location-worker {
+    height: auto !important;
+}
+
+/*add skills page*/
+#skillSelect {
+    margin: 0 auto;
+    border: none;
+}
+
+.select-skill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+select#skillSelect {
+    width: 60%; /* Or any specific width */
+    padding: 5px;
+    border: 1px solid #ccc;
+    appearance: none; /* Removes default styling */
+    background-color: white;
+    border-radius: 4px;
+
+  }
+
+  select#skillSelect option {
+    padding: 0 auto;
+  } 
+
+  .input-box #experience, .input-box #preferredrate {
+    border-bottom: 1px black solid;
+    appearance: none;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
+
+  #add-another-skill {
+    width: auto;
+    margin: 0 auto;
+  }
+
+  .skill-box {
+    display: flex;
+    flex-direction: column;
+    align-items:baseline;
+  }
+
+  .select-skill {
+    height: 0 !important;
+  }
+
+  input#experience, #preferredrate {
+    margin: 5px 0;
+  }
+
+  #skills-redirect {
+    width: auto;
+    margin: 20px auto;
+  }
+
+ .container-visibility {
+    display: flex;
+    flex-direction: column;
+ }
+
+
+ #visibility-status {
+    margin: 10px auto 0;
+ }
+
+ #abc {
+    display:none;
+ }

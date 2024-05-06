@@ -16,14 +16,14 @@ app.use(express.static('public'));
 
 app.set('view engine', 'ejs')
 const secret = crypto.randomBytes(64).toString('hex');
-const uri = 'mongodb+srv://tristenseng:backpack@cluster0.bis7cwk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+const uri = 'mongodb+srv://tristenseng:backpack@cluster0.bis7cwk.mongodb.net/localink?retryWrites=true&w=majority&appName=Cluster0'
 
 app.use(session({
     secret: secret,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: uri,  ttl: 5 * 60, autoRemove: 'native'}),
-    cookie: {secure:false, maxAge: 1000 * 60 * 5 } //5 minutes
+    store: MongoStore.create({ mongoUrl: uri,  ttl: 60 * 60, autoRemove: 'native'}),
+    cookie: {secure:false, maxAge: 1000 * 60 * 60 } //60 minutes
 }));
 
 
@@ -79,7 +79,7 @@ app.get('/skills-worker', async (req, res) => {
 app.get('/workerskills', async (req, res) => {
     try {
         await client.connect()
-        const db = client.db('test')
+        const db = client.db('localink')
         const collection = db.collection('workerskills')
         const data = await collection.find({workerid: req.session.user.workerid}).toArray()
         console.log(data)
@@ -95,7 +95,7 @@ app.get('/workerskills', async (req, res) => {
 app.get('/skillsArray', async (req, res) => {
     try {
         await client.connect()
-        const db = client.db('test')
+        const db = client.db('localink')
         const collection = db.collection('skills')
         const data = await collection.find().toArray()
         //console.log(data)
@@ -117,7 +117,7 @@ app.get('/requests-worker', async (req, res) => {
 
 app.post('/toggleVisibility', async (req, res) => {
     await client.connect();
-    const database = client.db('test');
+    const database = client.db('localink');
     const workers = database.collection('workers')
     const worker = await workers.findOne({email: req.session.user.email})
     if (worker.working) {
@@ -140,12 +140,12 @@ app.post('/home-worker', (req, res) => {
 app.post('/location-worker', async (req, res) => {
     try { 
         await client.connect();
-        const database = client.db('test');
+        const database = client.db('localink');
         const workers = database.collection('workers');
         const worker = await workers.findOne({email: req.session.user.email})
         // console.log('in location-worker')
         // console.log(worker)
-        const location = `${req.body.city}, ${req.body.state}`
+        const location = `${req.body.city.toLowerCase()}, ${req.body.state.toLowerCase()}`
         const d = Date(Date.now()).toString()
         await workers.updateOne(worker, {$set: {location: location, lastLogin: d}})
         res.redirect('/skills')
@@ -160,7 +160,7 @@ app.post('/skills', async (req, res) => {
     try {
         await client.connect();
         //console.log('yea')
-        const database = client.db('test');
+        const database = client.db('localink');
         const workerskills = database.collection('workerskills');
         const worker = req.session.user
         //console.log(req.session.user)
@@ -182,27 +182,27 @@ app.post('/skills', async (req, res) => {
 app.post('/register', async (req, res) => {
     try {
         await client.connect();
-        const database = client.db('test');
+        const database = client.db('localink');
         const employer = database.collection('employers');
         const worker = database.collection('workers');
         const hashPass = await bcrypt.hash(req.body.password, 10);
         const time = new Date().getTime();
         var objectid = ObjectId.createFromTime(time).toString().substring(0,8)
         const selectedRole = req.body.role
-
+        const firstname = req.body.firstname.toLowerCase()
+        const lastname = req.body.lastname.toLowerCase()
+        const email = req.body.email.toLowerCase()
     
         if (selectedRole == "worker") {
             const workerUser = {
                 workerid: objectid,
-                firstName: req.body.firstname,
-                lastName: req.body.lastname,
+                firstName: firstname,
+                lastName: lastname,
                 phoneNumber: req.body.phonenumber,
-                email: req.body.email,
+                email: email,
                 password: hashPass,
-                review: [],
                 visibility: false,
-                working: false,
-                lastLogin: null
+                working: false
             };
             await worker.insertOne(workerUser)
             res.redirect('/login')
@@ -211,10 +211,10 @@ app.post('/register', async (req, res) => {
         else {
             const employerUser = {
                 employerid: objectid,
-                firstName: req.body.firstname,
-                lastName: req.body.lastname,
+                firstName: firstname,
+                lastName: lastname,
                 phoneNumber: req.body.phonenumber,
-                email: req.body.email,
+                email: email,
                 password: hashPass,
                 lastLogin: null
             };
@@ -235,11 +235,12 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req,res) => {
     try {
         await client.connect();
-        const database = client.db('test');
+        const database = client.db('localink');
         const employers = database.collection('employers');
         const workers = database.collection('workers');
-        const employer = await employers.findOne({ email: req.body.email });
-        const worker = await workers.findOne({ email: req.body.email });
+        const email = req.body.email.toLowerCase()
+        const employer = await employers.findOne({ email: email });
+        const worker = await workers.findOne({ email: email });
         
         var pass = "";
         if (employer) {
@@ -280,7 +281,7 @@ app.post('/login', async (req,res) => {
     }
     catch (err) {
         console.error(err);
-        res.status(500).send("Error")
+        res.redirect('/login')
     } finally {
         await client.close();
     }
@@ -313,7 +314,7 @@ app.get('/potential-workers', (req, res) => {
 app.post('/location-employer', async (req, res) => {
     try { 
         await client.connect();
-        const database = client.db('test');
+        const database = client.db('localink');
         const employers = database.collection('employers');
         const employer = await employers.findOne({email: req.session.user.email})
         console.log('in location-worker')
@@ -331,7 +332,7 @@ app.post('/location-employer', async (req, res) => {
 
 app.post('/createJob', async (req, res) => {
         await client.connect();
-        const database = client.db('test');
+        const database = client.db('localink');
         const jobs = database.collection('jobs');
         const time = new Date().getTime();
         var objectid = ObjectId.createFromTime(time).toString().substring(0,8)
@@ -352,7 +353,7 @@ app.post('/createJob', async (req, res) => {
 app.get('/jobsArray', async (req, res) => {
     try {
         await client.connect()
-        const db = client.db('test')
+        const db = client.db('localink')
         const collection = db.collection('jobs')
         const data = await collection.find({employerid: req.session.user.employerid}).toArray()
         const filteredData = data.filter(job => (job.workerid == null) && job.completed == false)
@@ -373,7 +374,7 @@ app.get('/requests', async (req, res) => {
 app.post('/potentialworkers', async (req, res) => {
     try {
         await client.connect()
-        const db = client.db('test')
+        const db = client.db('localink')
         const workerskills = db.collection('workerskills')
         const workers = db.collection('workers')
         const jobs = db.collection('jobs')
@@ -429,7 +430,7 @@ app.get('/potentialworkers', async (req, res) => {
 })
 
 app.post('/requesttoworker', async (req, res) => {
-    const db = client.db('test')
+    const db = client.db('localink')
     const workers = db.collection('workers')
     const jobs = db.collection('jobs')
     const workerInfo = JSON.parse(req.body.worker)
@@ -443,7 +444,7 @@ app.post('/requesttoworker', async (req, res) => {
 
 app.post('/jobsforworker', async (req, res) => {
     await client.connect();
-    const db = client.db('test')
+    const db = client.db('localink')
     const alljobs = db.collection('jobs')
     //const job = alljobs.findOne({jobid: req.body.jobid})
     const alljobsarray = await alljobs.find({}).toArray();
@@ -499,7 +500,7 @@ app.post('/jobsforworker', async (req, res) => {
 //workers get request
 app.get('/jobsforworker', async (req, res) => {
     await client.connect();
-    const db = client.db('test')
+    const db = client.db('localink')
     const jobs = db.collection('jobs')
     const job = await jobs.find({workerid: req.session.user.workerid}).toArray()
     const employers = db.collection('employers')
@@ -508,10 +509,15 @@ app.get('/jobsforworker', async (req, res) => {
     console.log(job)
     //if job is only one object in array and that status is also accepted
     //it means the job is accepted
+
     if (job.length == 1 && job[0].status == "accepted" && worker.working == true) {
         const employer = await employers.findOne({employerid: job[0].employerid})
         res.render('worker-has-job', {job: job[0], employer: employer})
-    } else {
+    } 
+    else if (job.length == 0) {
+        res.render('no-requests-workers')
+    }
+    else {
         res.render('requests-workers',{job: job})
     }
 
@@ -519,7 +525,7 @@ app.get('/jobsforworker', async (req, res) => {
 
 app.get('/jobsInProgress', async (req, res) => {
     await client.connect();
-    const db = client.db('test')
+    const db = client.db('localink')
     const jobs = db.collection('jobs')
 
     const jobsArray = await jobs.find({employerid: req.session.user.employerid}).toArray()
@@ -565,7 +571,7 @@ app.get('/jobsInProgress', async (req, res) => {
 
 app.post('/job-completed', async(req, res) => {
     await client.connect()
-    const db = client.db('test')
+    const db = client.db('localink')
     const workers = db.collection('workers')
     const jobs = db.collection('jobs')
     const jobid = req.body.jobid
@@ -591,14 +597,14 @@ app.post('/job-completed', async(req, res) => {
 
 app.post('/job-review', async(req, res) => {
     await client.connect()
-    const db = client.db('test')
+    const db = client.db('localink')
     const jobs = db.collection('jobs')
     const workers = db.collection('workers')
     const workerinfo = JSON.parse(req.body.worker)
     const job = await jobs.findOne({jobid: req.body.jobid})
     const worker = await workers.findOne({workerid: workerinfo.workerid})
     const review = req.body.review
-    await workers.updateOne(worker, {$push: {review: {rating: req.body.rate, description: review}}})
+    await workers.updateOne(worker, {$push: {review: {jobid: req.body.jobid, rating: req.body.rate, description: review}}})
     res.redirect('/home-employer')
 })
 
