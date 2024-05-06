@@ -500,12 +500,14 @@ app.get('/jobsforworker', async (req, res) => {
     const db = client.db('test')
     const jobs = db.collection('jobs')
     const job = await jobs.find({workerid: req.session.user.workerid}).toArray()
-    const employers = db.collection('workers')
+    const employers = db.collection('employers')
+    const workers = db.collection('workers')
+    const worker = await workers.findOne({workerid: req.session.user.workerid})
     console.log(job)
     //if job is only one object in array and that status is also accepted
     //it means the job is accepted
-    if (job.length == 1 && job[0].status == "accepted") {
-        const employer = await employers.findOne({employerid: job.employerid})
+    if (job.length == 1 && job[0].status == "accepted" && worker.working == true) {
+        const employer = await employers.findOne({employerid: job[0].employerid})
         res.render('worker-has-job', {job: job[0], employer: employer})
     } else {
         res.render('requests-workers',{job: job})
@@ -517,38 +519,46 @@ app.get('/jobsInProgress', async (req, res) => {
     await client.connect();
     const db = client.db('test')
     const jobs = db.collection('jobs')
-    //jobsArray = await jobs.find({employerid: req.session.user.employerid, status: "accepted"}).toArray()
-    var workers = []
-    const agg = [
-        {
-          '$lookup': {
-            'from': 'workers', 
-            'localField': 'workerid',
-            'foreignField': 'workerid', 
-            'as': 'result'
-          }
-        }
-    ];
-    var jobsWithWorkers = []
-    const cursor = jobs.aggregate(agg);
-    const arr = await cursor.toArray();
-    arr.forEach(item => {
-        if (item.status == "accepted" && item.completed == false && item.workerid != undefined) {
-            // console.log('jobs')
-            // console.log(item)
-            // console.log('workers')
-            // console.log(item.result)
-            jobsWithWorkers.push({
-                job: item,
-                worker: item.result
-            })
-        }
-    })
-    // jobsWithWorkers.forEach(x => {
-    //     console.log(x.job.description)
-    //     console.log(x.worker[0].firstName)
-    // })
-    res.render('jobs-in-progress', {jobs: jobsWithWorkers})
+
+    const jobsArray = await jobs.find({employerid: req.session.user.employerid}).toArray()
+    if (jobsArray != undefined) {
+        console.log('this works')
+        res.r('no-jobs-in-progress')
+    }
+    else {
+    
+        var workers = []
+        const agg = [
+            {
+            '$lookup': {
+                'from': 'workers', 
+                'localField': 'workerid',
+                'foreignField': 'workerid', 
+                'as': 'result'
+            }
+            }
+        ];
+        var jobsWithWorkers = []
+        const cursor = jobs.aggregate(agg);
+        const arr = await cursor.toArray();
+        arr.forEach(item => {
+            if (item.status == "accepted" && item.completed == false && item.workerid != undefined) {
+                // console.log('jobs')
+                // console.log(item)
+                // console.log('workers')
+                // console.log(item.result)
+                jobsWithWorkers.push({
+                    job: item,
+                    worker: item.result
+                })
+            }
+        })
+        // jobsWithWorkers.forEach(x => {
+        //     console.log(x.job.description)
+        //     console.log(x.worker[0].firstName)
+        // })
+        res.render('jobs-in-progress', {jobs: jobsWithWorkers})
+    }
 })
 
 app.post('/job-completed', async(req, res) => {
@@ -561,10 +571,10 @@ app.post('/job-completed', async(req, res) => {
 
     await jobs.updateOne({jobid: req.body.jobid}, {$set: {completed:true}})
     const worker = await workers.findOne({workerid: job.workerid})
-    await workers.updateOne({workerid: job.workerid}, {$set: {working: false}})
-    console.log('first TRYYYY!')
+    await workers.updateOne({workerid: job.workerid}, {$set: {working: false}}, {$unset: {workerid}})
+    console.log(worker)
 
-    res.render('rate-worker', worker)
+    res.render('rate-worker', {worker: worker})
 })
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
