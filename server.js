@@ -464,7 +464,7 @@ app.post('/jobsforworker', async (req, res) => {
                 },
                 {
                     $set: { status: "rejected"},
-                    $unset: { workerid}
+                    $unset: { workerid: ""}
 
                 }
             )
@@ -486,7 +486,7 @@ app.post('/jobsforworker', async (req, res) => {
             },
             { 
                 $set: { status: "rejected" },
-                $unset: { workerid }
+                $unset: { workerid: "" }
             }
             )
     }
@@ -521,9 +521,9 @@ app.get('/jobsInProgress', async (req, res) => {
     const jobs = db.collection('jobs')
 
     const jobsArray = await jobs.find({employerid: req.session.user.employerid}).toArray()
-    if (jobsArray != undefined) {
+    if (jobsArray == undefined) {
         console.log('this works')
-        res.r('no-jobs-in-progress')
+        res.render('no-jobs-in-progress')
     }
     else {
     
@@ -570,8 +570,16 @@ app.post('/job-completed', async(req, res) => {
     console.log(req.body.jobid)
 
     await jobs.updateOne({jobid: req.body.jobid}, {$set: {completed:true}})
+    await jobs.updateOne(
+        {
+            jobid: req.body.jobid
+        },
+        { 
+            $unset: { workerid: "" }
+        }
+        )
     const worker = await workers.findOne({workerid: job.workerid})
-    await workers.updateOne({workerid: job.workerid}, {$set: {working: false}}, {$unset: {workerid}})
+    await workers.updateOne({workerid: job.workerid}, {$set: {working: false}})
     console.log(worker)
 
     res.render('rate-worker', {worker: worker})
