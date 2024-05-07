@@ -19,25 +19,22 @@
     
     <div class="form-box jobType-employer">
       <h2>Job Posting</h2>
-      <form action="/createJob" method="POST">
-        <div class="input-box" >
-          <textarea name="description"
-            type="text"
-            id="notes"
-          ></textarea>
-          <label for="description">Job Description *</label>
-        </div>
-        <div class="input-box">
+      <form id="sddf"action="/createJob" method="POST">
+        <div class="input-box" id="heres">
           <select name="skillRequired" id="skillsSelect">
             <option selected>Select Skill</option>
-        </select>
+          </select>
         </div>
+        <div class="input-box" >
+          <input type="text" name="description"class="job-description-class">
+          <label for="description">Job Description</label>
+        </div>
+
         <div class="input-box">
           <input type="number" id="duration-id" name="duration" min="0" />
-          <label for="rate">Expected Duration (days) *</label>
+          <label id="dd"for="rate">Expected Duration (days)</label>
         </div>
-        <button id="job-submit-button" type="submit" class="btn">Submit</button>
-        <button type="submit" class="btn" formaction="/home-employer">Finished</button>
+        <button id="job-submit-button" type="submit" class="btn">Submit Job</button>
         <span id="show-something"></span>
       </form>
     </div>

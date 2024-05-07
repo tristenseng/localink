@@ -345,6 +345,7 @@ app.post('/createJob', async (req, res) => {
             status: 'pending',
             completed: false
         }
+        console.log(job)
         await jobs.insertOne(job)
         res.redirect('/jobPosting')
 
@@ -528,7 +529,7 @@ app.get('/home', async (req, res) => {
     const db = client.db('localink')
     const jobs = db.collection('jobs')
     const jobsArray = await jobs.find({employerid: req.session.user.employerid}).toArray()
-    console.log(jobsArray)
+    //console.log(jobsArray)
     if (jobsArray.length == 0) {
         console.log('this works')
         res.render('no-jobs-in-progress')
@@ -589,7 +590,7 @@ app.post('/job-completed', async(req, res) => {
         )
     const worker = await workers.findOne({workerid: job.workerid})
     await workers.updateOne({workerid: job.workerid}, {$set: {working: false, visibility: true}})
-    console.log(worker)
+    //console.log(worker)
 
     res.render('rate-worker', {worker: worker, jobid: jobid})
 })

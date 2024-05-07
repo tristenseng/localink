@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | LocaLink</title>
-    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="/public/style.css" />
   </head>
   <body>
     <header>
@@ -17,16 +17,16 @@
       </nav>  <!-- Add a logout link -->
     </header>
     <main class="form-box rate-werker">
-      <h2>How did the worker do?</h2>
-      <form action="/job-review" method="post" class="rate">
-        <label for="rate">Rating</label>
-        <input type="number" name="rate" id="ratingthing" min="1" max="5" value="5">
-        <textarea id="asdfgh"name="review" cols="35" rows="3">Describe how he did</textarea>
+        <h2>How did the worker do?</h2>
+        <form action="/job-review" method="post" class="rate">
+          <label for="rate">Rating</label>
+          <input type="number" name="rate" id="ratingthing" min="1" max="5" value="5">
+          <textarea id="asdfgh"name="review" cols="35" rows="3">Describe how he did</textarea>
 
-        <button type="submit">Submit</button>
-        <input type="hidden" name="worker" value="<%= JSON.stringify({ workerid: worker.workerid, jobid: jobid })%>"/>
-      </form>
-    </main>
+          <button type="submit">Submit</button>
+          <input type="hidden" name="worker"/>
+        </form>
+      </main>
     <script>
             document.querySelector('form').addEventListener('submit', function(event) {
 

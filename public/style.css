@@ -67,7 +67,6 @@ header {
     width: 100px;
     height: 50px;
     background: transparent;
-    border: 2px solid black;
     outline: none;
     border-radius: 6px;
     cursor: pointer;
@@ -77,9 +76,29 @@ header {
     margin-left: 40px;
 }
 
+.form-box.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+}
+
+.form-box.login  p{
+    margin: 10px
+}
+
+.homie {
+    font-size: 20px !important;
+}
 .navigation .btnLogin-popup:hover {
     background: #fff;
     color: #162938;
+}
+
+#asdf {
+    display: flex;
+    align-items: center;
+    align-content: center;
 }
 
 .navigation .btnRegister-popup {
@@ -695,42 +714,6 @@ li {
 
 
 /*stars rating*/
-.rate{
-    float: left;
-    height: 46px;
-    padding: 0 10px;
-}
-.rate:not(:checked) > input {
-    position:absolute;
-    top:-9999px;
-}
-.rate:not(:checked) > label {
-    float:right;
-    width:1em;
-    overflow:hidden;
-    white-space:nowrap;
-    cursor:pointer;
-    font-size:30px;
-    color:#ccc;
-}
-.rate:not(:checked) > label:before {
-    content: '★ ';
-}
-.rate > input:checked ~ label {
-    color: #ffc700;    
-}
-.rate:not(:checked) > label:hover,
-.rate:not(:checked) > label:hover ~ label {
-    color: #deb217;  
-}
-.rate > input:checked + label:hover,
-.rate > input:checked + label:hover ~ label,
-.rate > input:checked ~ label:hover,
-.rate > input:checked ~ label:hover ~ label,
-.rate > label:hover ~ input:checked ~ label {
-    color: #c59b08;
-}
-
 
 
 /*login page*/
@@ -826,3 +809,82 @@ select#skillSelect {
  #abc {
     display:none;
  }
+
+ #yuh {
+    display: flex;
+    flex-direction: column;
+ }
+
+
+.form-box.location-employer {
+    height: 100% !important;
+}
+
+.jobType-employer form{
+    border-bottom: 1px solid black !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.job-description-class {
+    border-bottom: 2px solid black !important;
+}
+
+#duration-id {
+    border-bottom: 2px solid black;
+}
+
+#sddf {
+    display: flex;
+    flex-direction: column;
+}
+
+
+#asdfgh {
+    resize: none;
+}
+
+.rate-werker {
+    display: flex !important;
+    flex-direction: column !important;
+    width: auto;
+
+}
+
+
+/*star rating*/
+
+
+#ratingthing {
+    width: auto;
+    align-self: center;
+}
+
+.rate {
+    display: flex;
+    margin: 5px 0 ;
+    flex-direction: column;
+    align-items: center;
+}
+.rate > * {
+    margin: 5px 0;
+}
+
+/*job request for worker*/
+#job-request-list {
+    height: auto !important;
+}
+
+.worker-list li{
+    border-bottom: none !important;
+}
+
+#potential1 {
+
+}
+
+#potential-workers-list {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
