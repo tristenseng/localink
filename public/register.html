@@ -9,7 +9,7 @@
 <body>
     <div class="form-box register">
         <h2>Register</h2>
-        <form action="register" method="POST"> <!-- Redirect to home page on successful registration -->
+        <form class="regnav"action="register" method="POST"> <!-- Redirect to home page on successful registration -->
             <div class="input-box">
                 <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
                 <input name="firstname" type="text" required>
@@ -22,7 +22,7 @@
             </div>
             <div class="input-box">
                 <span class="icon"><ion-icon name="person-circle"></ion-icon></span>
-                <input name="phonenumber" type="text" equired>
+                <input name="phonenumber" type="text" required>
                 <label>Phone Number</label>
             </div>
             <div class="input-box">
@@ -32,7 +32,7 @@
             </div>
             <div class="input-box">
                 <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                <input name="password" type="password" value="test" required>
+                <input name="password" type="password" required>
                 <label>Password</label>
             </div>
             <select id="dropdown" class="input-box" name="role">
