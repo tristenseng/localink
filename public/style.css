@@ -888,3 +888,34 @@ select#skillSelect {
     align-items: center;
     flex-direction: column;
 }
+
+/* Star rating wrapper setup */
+.star-rating {
+    direction: rtl; /* Right-to-left to ensure filling stars from right to left */
+    font-size: 30px; /* Adjust the size of the stars */
+    unicode-bidi: bidi-override; /* Maintain star order */
+}
+
+/* Hide the radio buttons */
+.star-rating input {
+    display: none;
+}
+
+/* Style for the star labels */
+.star-rating label {
+    color: #ccc; /* Default color of stars (gray) */
+    cursor: pointer; /* Show pointer cursor when hovering over a star */
+    font-size: 2rem; /* Star size, can be adjusted */
+}
+
+/* Change star color on hover and for selected stars */
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: gold; /* Color of active stars */
+}
+
+/* Optional: prevent highlight selection of stars text */
+.star-rating label {
+    user-select: none; /* Prevent text selection */
+}

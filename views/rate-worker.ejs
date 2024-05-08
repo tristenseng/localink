@@ -1,38 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | LocaLink</title>
     <link rel="stylesheet" href="../style.css" />
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <h2 class="logo">Localink</h2>
-      <nav class="navigation">
-        <a href="/home-employer">Home</a>
-        <a href="/requests">Requests</a>
-        <a href="/jobPosting">Jobs</a>
-        <a href="/logout">Logout</a>
-      </nav>  <!-- Add a logout link -->
+        <h2 class="logo">Localink</h2>
+        <nav class="navigation">
+            <a href="/home-employer">Home</a>
+            <a href="/requests">Requests</a>
+            <a href="/jobPosting">Jobs</a>
+            <a href="/logout">Logout</a>
+        </nav>
     </header>
     <main class="form-box rate-werker">
-      <h2>How did the worker do?</h2>
-      <form action="/job-review" method="post" class="rate">
-        <label for="rate">Rating</label>
-        <input type="number" name="rate" id="ratingthing" min="1" max="5" value="5">
-        <textarea id="asdfgh"name="review" cols="35" rows="3">Describe how he did</textarea>
-
-        <button type="submit">Submit</button>
-        <input type="hidden" name="worker" value="<%= JSON.stringify({ workerid: worker.workerid, jobid: jobid })%>"/>
-      </form>
+        <h2>How did the worker do?</h2>
+        <form action="/job-review" method="post" class="rate">
+            <div class="star-rating">
+                <input id="star5" name="rate" type="radio" value="5">
+                <label for="star5">★</label>
+                <input id="star4" name="rate" type="radio" value="4">
+                <label for="star4">★</label>
+                <input id="star3" name="rate" type="radio" value="3">
+                <label for="star3">★</label>
+                <input id="star2" name="rate" type="radio" value="2">
+                <label for="star2">★</label>
+                <input id="star1" name="rate" type="radio" value="1">
+                <label for="star1">★</label>
+            </div>
+            <textarea id="asdfgh" name="review" cols="35" rows="3" placeholder="Describe how he did"></textarea>
+            <button type="submit">Submit</button>
+            <input type="hidden" name="worker" value="<%= JSON.stringify({ workerid: worker.workerid, jobid: jobid }) %>"/>
+        </form>
     </main>
     <script>
-            document.querySelector('form').addEventListener('submit', function(event) {
-
-            var selectedRating = document.querySelector('input[name="rate"]:checked').value;
-            console.log('You rated: ' + selectedRating + ' stars');
-            });
+        document.querySelector('form').addEventListener('submit', function(event) {
+            var selectedRating = document.querySelector('input[name="rate"]:checked');
+            if (!selectedRating) {
+                alert('Please select a rating.');
+                event.preventDefault();
+                return false;
+            }
+            console.log('You rated: ' + selectedRating.value + ' stars');
+        });
     </script>
-  </body>
+</body>
 </html>
