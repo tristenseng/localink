@@ -398,9 +398,13 @@ app.post('/potentialworkers', async (req, res) => {
           ];
         const cursor = workers.aggregate(agg);
         const result = await cursor.toArray();
+
+         
+        /*review avg */
         //console.log(result)
-        result.forEach(worker => {
-            //console.log(worker)
+        result.forEach(async worker => {
+            console.log(worker.workerid)
+            // const avg = await avgRating(worker.workerid)
             worker.result.forEach(item => {
                 //console.log(item)
                 //if worker has the appropriate skill for the job and has visibility
