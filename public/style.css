@@ -839,6 +839,9 @@ select#skillSelect {
     flex-direction: column;
 }
 
+#asdf > * {
+    margin: 5px;
+}
 
 #asdfgh {
     resize: none;
