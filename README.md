@@ -14,8 +14,8 @@ Disover local, trusted services right within your neighborhood. Whether you are 
 - Add skills
 
 
-## Employers should be able to 
-- Regist/Login
+## Employers should be able to: 
+- Register/Login
 - Create an account
 - Create a job/request
 - Complete jobs in progress
