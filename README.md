@@ -9,8 +9,9 @@ Run this command to get all the necessary packages.
 npm install bcrypt, body-parser, connect-mongo, cors, crypto, ejs, express, express-session, mongodb, node
 ```
 
-Run this command to start the local server.
+
 ## Usage
+Run this command to start the local server.
 ```bash
 npm run dev
 ```
