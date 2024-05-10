@@ -15,4 +15,6 @@ Run this command to start the local server.
 ```bash
 npm run dev
 ```
+
+Then proceed to localhost:3001 on your browser of choice.
 Traverse the site as one would.
