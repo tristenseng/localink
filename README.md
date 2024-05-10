@@ -4,7 +4,7 @@ Disover local, trusted services right within your neighborhood. Whether you are 
 
 ## Screenshot
 
-![alt text](https://github.com/tristenseng/localink/docs/demo.png)
+![alt text](https://github.com/tristenseng/localink/blob/main/docs/demo.png)
 
 
 ##Workers should be able to:
