@@ -4,7 +4,7 @@ Disover local, trusted services right within your neighborhood. Whether you are 
 
 ## Screenshot
 
-![alt text](https://github.com/tristenseng/daily-affirmations-app/blob/master/images/app-screenshot.PNG)
+![alt text](https://github.com/tristenseng/localink/docs/demo.png)
 
 
 ##Workers should be able to:
