@@ -7,14 +7,14 @@ Disover local, trusted services right within your neighborhood. Whether you are 
 ![alt text](https://github.com/tristenseng/localink/blob/main/docs/demo.png)
 
 
-##Workers should be able to:
+## Workers should be able to:
 - Register/Login
 - Set account visibility on or off
 - Accept/reject jobs from employers
 - Add skills
 
 
-##Employers should be able to 
+## Employers should be able to 
 - Regist/Login
 - Create an account
 - Create a job/request
