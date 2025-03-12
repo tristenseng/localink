@@ -56,6 +56,6 @@ Then proceed to localhost:3001 on your browser of choice.
 
 - (MongoDB) Creating a mongodb schema to organize things helped immensely for keeping the backend manageable and easy to modify.
 
-- (Express) Sessions are insecure. They should only be used for development and they should not go into a database. This goes again RESTful-ness. We should go with express-cookies next time.
+- (Express) Sessions are insecure. They should only be used for development and they should not go into a database. This goes against RESTful-ness. We should go with express-cookies next time.
 
 - (Overall) Starting with a solid foundation of code is paramount to having an application that is easy to work with. Spending the time to setup the basics correctly is worth it.
